@@ -3,7 +3,7 @@ import os
 import discord
 
 client = discord.Client()
-
+overwatch_dictionary = {}
 
 @client.event
 async def on_ready():
@@ -24,6 +24,11 @@ async def on_message(message):
             await message.channel.send('Hello {}!'.format(message.author.display_name))
         else:
             await message.channel.send('Hello {}!'.format(message.author))
+    elif message.content.startswith('register'):
+        msgs = message.content.split
+        if len(msgs) == 2:
+            overwatch_dictionary[message.author] = msgs[1]
+            print(overwatch_dictionary)
 
 
 @client.event
@@ -33,7 +38,6 @@ async def on_member_join(member):
 
 @client.event
 async def on_voice_state_update(member, before, after):
-    print('voice update recieved: {},{},{}'.format(member, before, after))
     if before.channel is None or (before.channel.name != "General" and after.channel.name == "General"):
         await member.guild.text_channels[0].send('Hello {}'.format(member.display_name))
 
