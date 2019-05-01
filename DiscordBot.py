@@ -28,6 +28,12 @@ async def on_message(message):
 
 @client.event
 async def on_member_join(member):
-    await member.guild.text_channels[0].send("This probably won't work")
+    await member.guild.text_channels[0].send('Hello {}!'.format(member.display_name))
 
 client.run(get_token())
+
+
+@client.event
+async def on_voice_state_update(member, before, after):
+    if before is None or before.name is not "General":
+        member.guild.text_channels[0].send('Hello {}'.format(member.display_name))
