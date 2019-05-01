@@ -28,9 +28,12 @@ async def on_message(message):
             await message.channel.send('Hello {}!'.format(message.author))
     elif message.content.startswith('register'):
         msgs = message.content.split()
-        if len(msgs) == 2:
+        if len(msgs) == 2 and "#" not in msgs[1]:
             overwatch_dictionary[message.author.name] = msgs[1]
-
+            await message.channel.send('Registration complete.')
+        else:
+            await message.channel.send(
+                'Registration failed please type "register <Battle Tag>". Replace the "#" character with a "-".')
 
 @client.event
 async def on_member_join(member):
