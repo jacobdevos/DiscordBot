@@ -6,6 +6,7 @@ import requests
 client = discord.Client()
 overwatch_dictionary = {}
 
+
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
@@ -29,6 +30,7 @@ async def on_message(message):
         msgs = message.content.split()
         if len(msgs) == 2:
             overwatch_dictionary[message.author.name] = msgs[1]
+
 
 @client.event
 async def on_member_join(member):
@@ -65,6 +67,3 @@ async def on_voice_state_update(member, before, after):
 
 
 client.run(get_token())
-
-
-
