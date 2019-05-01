@@ -42,11 +42,16 @@ def insert_user(discord_name, battle_tag):
 
 
 def get_user(discord_name):
+    if not os.path.isfile(sql_database):
+        return None
     conn = create_connection()
     cur = conn.cursor()
     cur.execute(sql_select_table, (discord_name,))
     rows = cur.fetchall()
-    value = rows[0]
+    if len(rows) == 0:
+        value = None
+    else:
+        value = rows[0]
     conn.close()
     return value
 
@@ -114,7 +119,7 @@ async def on_voice_state_update(member, before, after):
             else:
                 await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
                     overwatch_dictionary[member.name], response))
-            print(get_user(member.name))
+        print("database query result for user {} is {}".format(member.name, get_user(member.name)))
 
 
 client.run(get_token())
