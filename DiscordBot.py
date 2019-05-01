@@ -34,7 +34,7 @@ async def on_member_join(member):
 @client.event
 async def on_voice_state_update(member, before, after):
     print('voice update recieved: {},{},{}'.format(member, before, after))
-    if before.channel is None or before.channel.name is not "General":
+    if before.channel is None or before.channel.name is not "General" and after.channel.name is "General":
         await member.guild.text_channels[0].send('Hello {}'.format(member.display_name))
 
 client.run(get_token())
