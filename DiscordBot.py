@@ -2,6 +2,7 @@ import os
 
 import discord
 import requests
+import pymongo
 
 client = discord.Client()
 overwatch_dictionary = {}
@@ -34,6 +35,7 @@ async def on_message(message):
         else:
             await message.channel.send(
                 'Registration failed please type "register <Battle Tag>". Replace the "#" character with a "-".')
+
 
 @client.event
 async def on_member_join(member):
