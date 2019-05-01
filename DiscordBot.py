@@ -28,7 +28,7 @@ async def on_message(message):
     elif message.content.startswith('register'):
         msgs = message.content.split()
         if len(msgs) == 2:
-            overwatch_dictionary[message.author] = msgs[1]
+            overwatch_dictionary[message.author.name] = msgs[1]
 
 @client.event
 async def on_member_join(member):
@@ -40,9 +40,9 @@ async def on_voice_state_update(member, before, after):
     if before.channel is None or (before.channel.name != "General" and after.channel.name == "General"):
         text_channel = member.guild.text_channels[0]
         await  text_channel.send('Hello {}'.format(member.display_name))
-        print(member)
+        print(member.name)
         print(overwatch_dictionary)
-        if overwatch_dictionary[member] is not None:
+        if overwatch_dictionary[member.name] is not None:
             response = requests.get('https://ow-api.com/v1/stats/:platform/:region/{}/profile'.format(member))
             if response.ok:
                 await  text_channel.send('Stats \n {}'.format(response.json()['competitiveStats']))
