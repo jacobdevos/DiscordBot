@@ -49,7 +49,8 @@ def format_login_response(response):
 
 @client.event
 async def on_voice_state_update(member, before, after):
-    if (before.channel is None or before.channel.name != "General") and after.channel.name == "General":
+    if (
+            before.channel is None or before.channel.name != "General") and after.channel is not None and after.channel.name == "General":
         text_channel = member.guild.text_channels[0]
         await text_channel.send('Hello {}'.format(member.display_name))
         if member.name in overwatch_dictionary:
