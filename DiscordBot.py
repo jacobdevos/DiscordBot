@@ -44,7 +44,7 @@ async def on_voice_state_update(member, before, after):
         print(overwatch_dictionary)
         if overwatch_dictionary[member.name] is not None:
             response = requests.get(
-                'https://ow-api.com/v1/stats/:platform/:region/{}/profile'.format(overwatch_dictionary[member.name]))
+                'https://ow-api.com/v1/stats/pc/us/{}/profile'.format(overwatch_dictionary[member.name]))
             if response.ok:
                 await  text_channel.send('Stats \n {}'.format(response.json()['competitiveStats']))
             else:
