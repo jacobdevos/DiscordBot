@@ -20,6 +20,11 @@ async def on_message(message):
         return
 
     if message.content.startswith('$hello'):
-        await message.channel.send('Hello {}!'.format(message.author))
+        print(type(message))
+        if type(message) == 'discord.Member':
+            await message.channel.send('Hello {}!'.format(message.author.display_name))
+        else:
+            await message.channel.send('Hello {}!'.format(message.author))
+
 
 client.run(get_token())
