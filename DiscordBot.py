@@ -55,7 +55,7 @@ async def on_voice_state_update(member, before, after):
         await text_channel.send('Hello {}'.format(member.display_name))
         if member.name in overwatch_dictionary:
             response = requests.get(
-                'https://ow-api.com/v1/stats/pc/us/{}/profile'.format(overwatch_dictionary[member.name]))
+                'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(overwatch_dictionary[member.name]))
             if response.ok:
                 await text_channel.send(format_login_response(response))
             else:
