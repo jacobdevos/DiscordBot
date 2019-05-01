@@ -1,6 +1,7 @@
 import os
 
 import discord
+import requests
 
 client = discord.Client()
 overwatch_dictionary = {}
@@ -28,8 +29,6 @@ async def on_message(message):
         msgs = message.content.split()
         if len(msgs) == 2:
             overwatch_dictionary[message.author] = msgs[1]
-            print(overwatch_dictionary)
-
 
 @client.event
 async def on_member_join(member):
@@ -39,7 +38,13 @@ async def on_member_join(member):
 @client.event
 async def on_voice_state_update(member, before, after):
     if before.channel is None or (before.channel.name != "General" and after.channel.name == "General"):
-        await member.guild.text_channels[0].send('Hello {}'.format(member.display_name))
+        text_channel = member.guild.text_channels[0]
+        await  text_channel.send('Hello {}'.format(member.display_name))
+        if overwatch_dictionary[member] is not None:
+            response = requests.get('https://ow-api.com/v1/stats/:platform/:region/{}/profile'.format(member))
+            if response.ok:
+                await  text_channel.send('Stats \n {}'.format(response.json()['competitiveStats']))
+
 
 client.run(get_token())
 
