@@ -28,6 +28,6 @@ async def on_message(message):
 
 @client.event
 async def on_member_join(member):
-    member.guild.text_channels[0].send("This probably won't work")
+    await member.guild.text_channels[0].send("This probably won't work")
 
 client.run(get_token())
