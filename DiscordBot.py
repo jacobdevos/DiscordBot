@@ -25,7 +25,7 @@ async def on_message(message):
         else:
             await message.channel.send('Hello {}!'.format(message.author))
     elif message.content.startswith('register'):
-        msgs = message.content.split
+        msgs = message.content.split()
         if len(msgs) == 2:
             overwatch_dictionary[message.author] = msgs[1]
             print(overwatch_dictionary)
