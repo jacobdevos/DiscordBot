@@ -41,10 +41,10 @@ def format_login_response(response):
     output = "Welcome back {}. Your top heroes this season are:\n".format(response["name"])
     top_heroes = response["competitiveStats"]["topHeroes"]
     for x in top_heroes:
-        output += "{}: Win percentage: {} | games won: {} | time played: {}\n".format(x.capitalize(),
-                                                                                      top_heroes[x]["winPercentage"],
-                                                                                      top_heroes[x]["gamesWon"],
-                                                                                      top_heroes[x]["timePlayed"])
+        output += "\t{}: Win percentage: {} | games won: {} | time played: {}\n".format(x.capitalize(),
+                                                                                        top_heroes[x]["winPercentage"],
+                                                                                        top_heroes[x]["gamesWon"],
+                                                                                        top_heroes[x]["timePlayed"])
 
     return output
 
