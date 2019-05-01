@@ -40,6 +40,8 @@ async def on_voice_state_update(member, before, after):
     if before.channel is None or (before.channel.name != "General" and after.channel.name == "General"):
         text_channel = member.guild.text_channels[0]
         await  text_channel.send('Hello {}'.format(member.display_name))
+        print(member)
+        print(overwatch_dictionary)
         if overwatch_dictionary[member] is not None:
             response = requests.get('https://ow-api.com/v1/stats/:platform/:region/{}/profile'.format(member))
             if response.ok:
