@@ -36,7 +36,7 @@ async def on_member_join(member):
 
 
 def format_login_response(response):
-    output = None
+    output = ""
     top_heroes = response.json()["competitiveStats"]["topHeroes"]
     for x in top_heroes:
         output += "{}: Win percentage: {} | games won: {} | time played: {}\n".format(x.capitalize(),
