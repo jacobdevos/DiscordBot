@@ -26,4 +26,8 @@ async def on_message(message):
             await message.channel.send('Hello {}!'.format(message.author))
 
 
+@client.event
+async def on_member_join(member):
+    member.guild.text_channels[0].send("This probably won't work")
+
 client.run(get_token())
