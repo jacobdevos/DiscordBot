@@ -37,9 +37,9 @@ async def on_member_join(member):
     await member.guild.text_channels[0].send('Hello {}!'.format(member.display_name))
 
 
-def format_login_response(response):
-    output = "Welcome back {}. Your top heroes this season are:\n".format(response["name"])
-    top_heroes = response["competitiveStats"]["topHeroes"]
+def format_login_response(name, stats):
+    output = "Welcome back {} [Battle.net Tag {}]. Your top heroes this season are:\n".format(name, stats["name"])
+    top_heroes = stats["competitiveStats"]["topHeroes"]
     for x in top_heroes:
         output += "\t{}: Win percentage: {} | games won: {} | time played: {}\n".format(x.capitalize(),
                                                                                         top_heroes[x]["winPercentage"],
@@ -60,7 +60,7 @@ async def on_voice_state_update(member, before, after):
             response = requests.get(
                 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(overwatch_dictionary[member.name]))
             if response.ok:
-                await text_channel.send(format_login_response(response.json()))
+                await text_channel.send(format_login_response(member.name, response.json()))
             else:
                 await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
                     overwatch_dictionary[member.name], response))
