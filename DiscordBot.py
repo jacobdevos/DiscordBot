@@ -20,7 +20,7 @@ async def on_message(message):
         return
 
     if message.content.startswith('$hello'):
-        print(type(message))
+        print(type(message.author))
         if type(message.author) == 'discord.Member':
             await message.channel.send('Hello {}!'.format(message.author.display_name))
         else:
