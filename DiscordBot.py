@@ -23,5 +23,5 @@ async def on_message(message):
         await message.channel.send('Hello!')
 
 
-client.run(get_token())
 print("I'm alive")
+client.run(get_token())
