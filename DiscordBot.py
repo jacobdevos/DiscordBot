@@ -8,54 +8,6 @@ import requests
 client = discord.Client()
 overwatch_dictionary = {}
 
-sql_database = "db/database.db"
-sql_create_table = "CREATE TABLE IF NOT EXISTS USERS{DISCORDNAME TEXT NOT NULL PRIMARY KEY,BATTLENETTAG TEXT}"
-sql_insert_table = "INSERT INTO USERS VALUES (?,?}"
-sql_select_table = "SELECT BATTLENETTAG FROM USERS WHERE DISCORDNAME = '?'"
-
-
-def create_connection():
-    try:
-        conn = sqlite3.connect(sql_database)
-        return conn
-    except Error as e:
-        print(e)
-
-    return None
-
-
-def create_table(conn, create_table_sql):
-    try:
-        c = conn.cursor()
-        c.execute(create_table_sql)
-    except Error as e:
-        print(e)
-
-
-def insert_user(discord_name, battle_tag):
-    conn = create_connection()
-    if not os.path.isfile(sql_database):
-        create_table(conn, sql_create_table)
-    c = conn.cursor()
-    c.execute(sql_insert_table, (discord_name, battle_tag))
-    c.close()
-
-
-def get_user(discord_name):
-    if not os.path.isfile(sql_database):
-        return None
-    conn = create_connection()
-    cur = conn.cursor()
-    cur.execute(sql_select_table, (discord_name,))
-    rows = cur.fetchall()
-    if len(rows) == 0:
-        value = None
-    else:
-        value = rows[0]
-    conn.close()
-    return value
-
-
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
@@ -80,7 +32,6 @@ async def on_message(message):
         if len(msgs) == 2 and "#" not in msgs[1]:
             overwatch_dictionary[message.author.name] = msgs[1]
             await message.channel.send('Registration complete.')
-            insert_user(message.author.name, msgs[1])
         else:
             await message.channel.send(
                 'Registration failed please type "register <Battle Tag>". Replace the "#" character with a "-".')
@@ -119,7 +70,5 @@ async def on_voice_state_update(member, before, after):
             else:
                 await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
                     overwatch_dictionary[member.name], response))
-        print("database query result for user {} is {}".format(member.name, get_user(member.name)))
-
 
 client.run(get_token())
