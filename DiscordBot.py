@@ -22,6 +22,4 @@ async def on_message(message):
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
 
-
-print("I'm alive")
 client.run(get_token())
