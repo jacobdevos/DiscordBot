@@ -35,5 +35,6 @@ client.run(get_token())
 
 @client.event
 async def on_voice_state_update(member, before, after):
+    print('voice update recieved: {},{},{}'.format(member, before, after))
     if before is None or before.name is not "General":
         member.guild.text_channels[0].send('Hello {}'.format(member.display_name))
