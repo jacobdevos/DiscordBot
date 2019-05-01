@@ -49,11 +49,12 @@ def format_login_response(response):
 
 @client.event
 async def on_voice_state_update(member, before, after):
+    text_channel = member.guild.text_channels[0]
     if (
             before.channel is None or before.channel.name != "General") and after.channel is not None and after.channel.name == "General":
-        text_channel = member.guild.text_channels[0]
-        await text_channel.send('Hello {}'.format(member.display_name))
-        if member.name in overwatch_dictionary:
+        if member.name not in overwatch_dictionary:
+            await text_channel.send('Hello {}'.format(member.display_name))
+        else:
             response = requests.get(
                 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(overwatch_dictionary[member.name]))
             if response.ok:
