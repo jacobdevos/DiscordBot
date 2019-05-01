@@ -36,6 +36,7 @@ async def on_message(message):
             await message.channel.send(
                 'Registration failed please type "register <Battle Tag>". Replace the "#" character with a "-".')
 
+
 @client.event
 async def on_member_join(member):
     await member.guild.text_channels[0].send('Hello {}!'.format(member.display_name))
