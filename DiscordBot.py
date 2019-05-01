@@ -49,7 +49,7 @@ async def on_voice_state_update(member, before, after):
             if response.ok:
                 string_response = response.json()['competitiveStats']
                 print(response.json())
-                await text_channel.send('Stats {}'.format(string_response))
+                await text_channel.send('Stats {}'.format(pprint(string_response)))
             else:
                 await  text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
                     overwatch_dictionary[member.name], response))
