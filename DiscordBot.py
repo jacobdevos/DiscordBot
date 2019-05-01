@@ -24,3 +24,4 @@ async def on_message(message):
 
 
 client.run(get_token())
+print("I'm alive")
