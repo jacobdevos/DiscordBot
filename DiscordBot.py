@@ -69,14 +69,14 @@ async def on_voice_state_update(member, before, after):
         if member.name not in overwatch_dictionary:
             await text_channel.send('Hello {}'.format(member.display_name))
         else:
-            print(get_battle_net_ids(member.name, storage))
-            response = requests.get(
-                'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(overwatch_dictionary[member.name]))
-            if response.ok:
-                await text_channel.send(format_login_response(member.name, response.json()))
-            else:
-                await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
-                    overwatch_dictionary[member.name], response))
+            for bnetid in get_battle_net_ids(member.name, storage):
+                response = requests.get(
+                    'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnetid))
+                if response.ok:
+                    await text_channel.send(format_login_response(member.name, response.json()))
+                else:
+                    await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
+                        bnetid, response))
 
 
 def get_battle_net_ids(discordName, table):
