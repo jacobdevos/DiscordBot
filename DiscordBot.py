@@ -21,23 +21,29 @@ def get_token():
 async def on_message(message):
     if message.author == client.user:
         return
-
-    if message.content.startswith('$hello'):
-        if isinstance(message.author, discord.member.Member):
-            await message.channel.send('Hello {}!'.format(message.author.display_name))
-        else:
-            await message.channel.send('Hello {}!'.format(message.author))
-    elif message.content.lower().startswith('register'):
+    lowercase_msg = message.content.lower()
+    if lowercase_msg.startswith('register'):
+        await register_user(message)
+    elif lowercase_msg.startswith('unregister'):
         msgs = message.content.split()
         if len(msgs) == 2 and "#" not in msgs[1]:
-            document = {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]}
-            if not storage.find_one(document):
-                storage.insert_one(document)
-            await message.channel.send('Registration complete.')
+            storage.remove(
+                {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]})
+        elif len(msgs) == 1:
+            storage.remove({MongoConstants.DISCORD_NAME_FIELD: message.author.name})
 
-        else:
-            await message.channel.send(
-                'Registration failed please type "register <Battle Tag>". Replace the "#" character with a "-".')
+
+async def register_user(message):
+    msgs = message.content.split()
+    if len(msgs) == 2 and "#" not in msgs[1]:
+        document = {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]}
+        if not storage.find_one(document):
+            storage.insert_one(document)
+        await message.channel.send('Registration complete.')
+
+    else:
+        await message.channel.send(
+            'Registration failed please type "register <Battle Tag>". Replace the "#" character with a "-".')
 
 
 @client.event
