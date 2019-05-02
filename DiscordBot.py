@@ -3,10 +3,10 @@ import os
 import discord
 import requests
 
+import MongoConstants
 import MongoDb
 
 client = discord.Client()
-overwatch_dictionary = {}
 storage = MongoDb.get_discord_mongo_table()
 @client.event
 async def on_ready():
@@ -30,7 +30,7 @@ async def on_message(message):
     elif message.content.lower().startswith('register'):
         msgs = message.content.split()
         if len(msgs) == 2 and "#" not in msgs[1]:
-            document = {"discordName": message.author.name, "overwatchUser": msgs[1]}
+            document = {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]}
             if not storage.find_one(document):
                 storage.insert_one(document)
             await message.channel.send('Registration complete.')
@@ -70,7 +70,7 @@ async def on_voice_state_update(member, before, after):
             await text_channel.send("Welcome back {}.".format(member.name))
             for result in result_set:
                 response = requests.get(
-                    'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(result["overwatchUser"]))
+                    'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(result[MongoConstants.BNET_ID_FIELD]))
                 if response.ok:
                     await text_channel.send(format_login_response(member.name, response.json()))
                 else:
@@ -79,6 +79,7 @@ async def on_voice_state_update(member, before, after):
 
 
 def get_battle_net_ids(discordName, table):
-    return table.find({'discordName': discordName})
+    return table.find({MongoConstants.DISCORD_NAME_FIELD: discordName})
+
 
 client.run(get_token())
