@@ -67,7 +67,7 @@ async def on_voice_state_update(member, before, after):
     if (
             before.channel is None or before.channel.name != "General") and after.channel is not None and after.channel.name == "General":
         bnetids = get_battle_net_ids(member.name, storage)
-        if not bnetids:
+        if len(bnetids) == 0:
             await text_channel.send('Hello {}'.format(member.display_name))
         else:
             for bnetid in bnetids:
