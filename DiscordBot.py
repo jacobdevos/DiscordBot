@@ -30,10 +30,7 @@ async def on_message(message):
     elif message.content.lower().startswith('register'):
         msgs = message.content.split()
         if len(msgs) == 2 and "#" not in msgs[1]:
-            discord_user_key = message.author.name
-            battlenet_id_value = msgs[1]
-            overwatch_dictionary[discord_user_key] = battlenet_id_value
-            document = {"discordName": discord_user_key, "overwatchUser": battlenet_id_value}
+            document = {"discordName": message.author.name, "overwatchUser": msgs[1]}
             if not storage.find_one(document):
                 storage.insert_one(document)
             await message.channel.send('Registration complete.')
@@ -72,7 +69,7 @@ async def on_voice_state_update(member, before, after):
         else:
             for bnetid in bnetids:
                 response = requests.get(
-                    'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnetid))
+                    'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnetid["overwatchUser"]))
                 if response.ok:
                     await text_channel.send(format_login_response(member.name, response.json()))
                 else:
