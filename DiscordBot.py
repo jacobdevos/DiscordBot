@@ -33,7 +33,9 @@ async def on_message(message):
             discord_user_key = message.author.name
             battlenet_id_value = msgs[1]
             overwatch_dictionary[discord_user_key] = battlenet_id_value
-            storage.insert_one({discord_user_key: battlenet_id_value})
+            document = {discord_user_key: battlenet_id_value}
+            if not storage.find_one(document):
+                storage.insert_one(document)
             await message.channel.send('Registration complete.')
 
         else:
