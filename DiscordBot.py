@@ -68,7 +68,7 @@ async def on_voice_state_update(member, before, after):
             await text_channel.send('Hello {}'.format(member.display_name))
         else:
             for result in resultSet:
-                print("battlenet user".format(result["overwatchUser"]))
+                print("battlenet user {}".format(result["overwatchUser"]))
                 response = requests.get(
                     'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(result["overwatchUser"]))
                 if response.ok:
