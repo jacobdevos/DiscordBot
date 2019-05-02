@@ -81,7 +81,11 @@ async def on_voice_state_update(member, before, after):
 
 
 def get_battle_net_ids(discordName, table):
-    print("retrieving ids for user {}".format(discordName))
-    return table.find({'discordName': discordName})
+    print("retrieving ids for user '{}'".format(discordName))
+    ids = table.find({'discordName': discordName})
+    print("count = {}", ids.count())
+    for id in ids:
+        print(id)
+    return ids;
 
 client.run(get_token())
