@@ -66,10 +66,11 @@ async def on_voice_state_update(member, before, after):
     text_channel = member.guild.text_channels[0]
     if (
             before.channel is None or before.channel.name != "General") and after.channel is not None and after.channel.name == "General":
-        if member.name not in overwatch_dictionary:
+        bnetids = get_battle_net_ids(member.name, storage)
+        if not bnetids:
             await text_channel.send('Hello {}'.format(member.display_name))
         else:
-            for bnetid in get_battle_net_ids(member.name, storage):
+            for bnetid in bnetids:
                 response = requests.get(
                     'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnetid))
                 if response.ok:
