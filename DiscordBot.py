@@ -25,18 +25,14 @@ async def on_message(message):
     if lowercase_msg.startswith('register'):
         await register_user(message)
     elif lowercase_msg.startswith('unregister'):
-        await unregister_user(message)
-
-
-async def unregister_user(message):
-    msgs = message.content.split()
-    if len(msgs) == 2 and "#" not in msgs[1]:
-        storage.remove(
-            {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]})
-        await message.channel.send('Unregistered.')
-    elif len(msgs) == 1:
-        storage.remove({MongoConstants.DISCORD_NAME_FIELD: message.author.name})
-        await message.channel.send('Unregistered.')
+        msgs = message.content.split()
+        if len(msgs) == 2 and "#" not in msgs[1]:
+            storage.remove(
+                {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]})
+            await message.channel.send('Unregistered.')
+        elif len(msgs) == 1:
+            storage.remove({MongoConstants.DISCORD_NAME_FIELD: message.author.name})
+            await message.channel.send('Unregistered.')
 
 
 async def register_user(message):
@@ -54,11 +50,7 @@ async def register_user(message):
 
 @client.event
 async def on_member_join(member):
-    await get_text_channel(member).send('Hello {}!'.format(member.display_name))
-
-
-async def get_text_channel(member):
-    return member.guild.text_channels[0]
+    await member.guild.text_channels[0].send('Hello {}!'.format(member.display_name))
 
 
 def format_login_response(name, stats):
@@ -76,7 +68,7 @@ def format_login_response(name, stats):
 
 @client.event
 async def on_voice_state_update(member, before, after):
-    text_channel = get_text_channel(member)
+    text_channel = member.guild.text_channels[0]
     if (
             before.channel is None or before.channel.name != "General") and after.channel is not None and after.channel.name == "General":
         result_set = get_battle_net_ids(member.name, storage)
