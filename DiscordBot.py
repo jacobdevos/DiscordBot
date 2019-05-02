@@ -1,13 +1,13 @@
 import os
-import sqlite3
-from sqlite3 import Error
 
 import discord
 import requests
 
+import MongoDb
+
 client = discord.Client()
 overwatch_dictionary = {}
-
+storage = MongoDb.get_discord_mongo_table()
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
@@ -30,8 +30,12 @@ async def on_message(message):
     elif message.content.lower().startswith('register'):
         msgs = message.content.split()
         if len(msgs) == 2 and "#" not in msgs[1]:
-            overwatch_dictionary[message.author.name] = msgs[1]
+            discord_user_key = message.author.name
+            battlenet_id_value = msgs[1]
+            overwatch_dictionary[discord_user_key] = battlenet_id_value
+            storage.insert_one({discord_user_key: battlenet_id_value})
             await message.channel.send('Registration complete.')
+
         else:
             await message.channel.send(
                 'Registration failed please type "register <Battle Tag>". Replace the "#" character with a "-".')
@@ -63,7 +67,7 @@ async def on_voice_state_update(member, before, after):
         if member.name not in overwatch_dictionary:
             await text_channel.send('Hello {}'.format(member.display_name))
         else:
-
+            print(get_battle_net_ids(member.name, storage))
             response = requests.get(
                 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(overwatch_dictionary[member.name]))
             if response.ok:
@@ -71,5 +75,9 @@ async def on_voice_state_update(member, before, after):
             else:
                 await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
                     overwatch_dictionary[member.name], response))
+
+
+def get_battle_net_ids(discordName, table):
+    return table.find({'discordName': discordName})
 
 client.run(get_token())
