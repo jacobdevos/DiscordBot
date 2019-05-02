@@ -54,7 +54,11 @@ async def register_user(message):
 
 @client.event
 async def on_member_join(member):
-    await member.guild.text_channels[0].send('Hello {}!'.format(member.display_name))
+    await get_text_channel(member).send('Hello {}!'.format(member.display_name))
+
+
+async def get_text_channel(member):
+    return member.guild.text_channels[0]
 
 
 def format_login_response(name, stats):
@@ -72,7 +76,7 @@ def format_login_response(name, stats):
 
 @client.event
 async def on_voice_state_update(member, before, after):
-    text_channel = member.guild.text_channels[0]
+    text_channel = get_text_channel(member)
     if (
             before.channel is None or before.channel.name != "General") and after.channel is not None and after.channel.name == "General":
         result_set = get_battle_net_ids(member.name, storage)
