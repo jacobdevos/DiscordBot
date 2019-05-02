@@ -46,7 +46,7 @@ async def on_member_join(member):
 
 
 def format_login_response(name, stats):
-    output = "[Battle.net Tag {}]. \nYour top heroes this season are:\n".format(name, stats["name"])
+    output = "[Battle.net Tag {}]. \nYour top heroes this season are:\n".format(stats["name"])
     top_heroes = stats["competitiveStats"]["topHeroes"]
     for x in top_heroes:
         output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(x.capitalize(),
