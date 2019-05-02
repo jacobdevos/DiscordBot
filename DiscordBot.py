@@ -25,12 +25,18 @@ async def on_message(message):
     if lowercase_msg.startswith('register'):
         await register_user(message)
     elif lowercase_msg.startswith('unregister'):
-        msgs = message.content.split()
-        if len(msgs) == 2 and "#" not in msgs[1]:
-            storage.remove(
-                {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]})
-        elif len(msgs) == 1:
-            storage.remove({MongoConstants.DISCORD_NAME_FIELD: message.author.name})
+        await unregister_user(message)
+
+
+async def unregister_user(message):
+    msgs = message.content.split()
+    if len(msgs) == 2 and "#" not in msgs[1]:
+        storage.remove(
+            {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]})
+        await message.channel.send('Unregistered.')
+    elif len(msgs) == 1:
+        storage.remove({MongoConstants.DISCORD_NAME_FIELD: message.author.name})
+        await message.channel.send('Unregistered.')
 
 
 async def register_user(message):
