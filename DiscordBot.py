@@ -63,11 +63,11 @@ async def on_voice_state_update(member, before, after):
     text_channel = member.guild.text_channels[0]
     if (
             before.channel is None or before.channel.name != "General") and after.channel is not None and after.channel.name == "General":
-        resultSet = get_battle_net_ids(member.name, storage)
-        if resultSet.count() == 0:
+        result_set = get_battle_net_ids(member.name, storage)
+        if result_set.count() == 0:
             await text_channel.send('Hello {}'.format(member.display_name))
         else:
-            for result in resultSet:
+            for result in result_set:
                 print("battlenet user {}".format(result["overwatchUser"]))
                 response = requests.get(
                     'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(result["overwatchUser"]))
@@ -80,10 +80,6 @@ async def on_voice_state_update(member, before, after):
 
 def get_battle_net_ids(discordName, table):
     print("retrieving ids for user '{}'".format(discordName))
-    ids = table.find({'discordName': discordName})
-    print("count = {}", ids.count())
-    for id in ids:
-        print(id)
-    return ids
+    return table.find({'discordName': discordName})
 
 client.run(get_token())
