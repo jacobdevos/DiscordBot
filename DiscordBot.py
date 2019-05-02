@@ -46,7 +46,7 @@ def format_login_response(name, stats):
     output = "Welcome back {} [Battle.net Tag {}]. \nYour top heroes this season are:\n".format(name, stats["name"])
     top_heroes = stats["competitiveStats"]["topHeroes"]
     for x in top_heroes:
-        output += "\t\t{}: Win percentage: {} | games won: {} | time played: {}\n".format(x.capitalize(),
+        output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(x.capitalize(),
                                                                                           top_heroes[x][
                                                                                               "winPercentage"],
                                                                                           top_heroes[x]["gamesWon"],
