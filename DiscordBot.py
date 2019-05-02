@@ -46,7 +46,7 @@ async def on_member_join(member):
 
 
 def format_login_response(name, stats):
-    output = "Welcome back {} [Battle.net Tag {}]. \nYour top heroes this season are:\n".format(name, stats["name"])
+    output = "[Battle.net Tag {}]. \nYour top heroes this season are:\n".format(name, stats["name"])
     top_heroes = stats["competitiveStats"]["topHeroes"]
     for x in top_heroes:
         output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(x.capitalize(),
@@ -67,8 +67,8 @@ async def on_voice_state_update(member, before, after):
         if result_set.count() == 0:
             await text_channel.send('Hello {}'.format(member.display_name))
         else:
+            await text_channel.send("Welcome back {}.".format(member.name))
             for result in result_set:
-                print("battlenet user {}".format(result["overwatchUser"]))
                 response = requests.get(
                     'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(result["overwatchUser"]))
                 if response.ok:
@@ -79,7 +79,6 @@ async def on_voice_state_update(member, before, after):
 
 
 def get_battle_net_ids(discordName, table):
-    print("retrieving ids for user '{}'".format(discordName))
     return table.find({'discordName': discordName})
 
 client.run(get_token())
