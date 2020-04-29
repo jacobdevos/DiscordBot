@@ -82,8 +82,8 @@ def get_sorted_hero_keys(raw_top_heroes):
 
     print("pruned heroes list: {}".format(raw_top_heroes))
     hero_keys = raw_top_heroes.keys()
-    sorted(hero_keys, key=lambda key: int(raw_top_heroes[key]["winPercentage"]))
-    print("sorted key  list {}".format(hero_keys))
+    hero_keys = sorted(hero_keys, key=lambda key: int(raw_top_heroes[key]["winPercentage"]))
+    print("sorted key list {}".format(hero_keys))
     return hero_keys
 
 
