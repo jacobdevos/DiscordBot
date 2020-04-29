@@ -69,15 +69,15 @@ def format_login_response(name, stats):
 
 def sort_top_heroes(stats):
     raw_top_heroes = stats["competitiveStats"]["topHeroes"]
-    print("pre-pruned: {}", raw_top_heroes)
+    print("pre-pruned: {}".format(raw_top_heroes))
 
     for hero in raw_top_heroes:
-        if int(hero["gamesWon"]) == 0:
+        if raw_top_heroes[hero]["gamesWon"] == 0:
             del raw_top_heroes[hero]
 
-    print("pruned heroes list: {}", raw_top_heroes)
+    print("pruned heroes list: {}".format(raw_top_heroes))
     sorted(raw_top_heroes, key=lambda hero: float(hero["winPercentage"]))
-    print("sorted heroes list {}", raw_top_heroes)
+    print("sorted heroes list {}".format(raw_top_heroes))
     return raw_top_heroes
 
 
