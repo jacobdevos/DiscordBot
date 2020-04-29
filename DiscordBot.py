@@ -55,7 +55,7 @@ async def on_member_join(member):
     await member.guild.text_channels[0].send('Hello {}!'.format(member.display_name))
 
 
-def format_login_response(name, stats):
+def format_login_response(stats):
     output = "[Battle.net Tag {}]. \nYour top heroes this season are:\n".format(stats["name"])
     raw_top_heroes = stats["competitiveStats"]["topHeroes"]
     raw_top_hero_keys = get_sorted_hero_keys(raw_top_heroes)
@@ -103,7 +103,7 @@ async def on_voice_state_update(member, before, after):
                 response = requests.get(
                     'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(result[MongoConstants.BNET_ID_FIELD]))
                 if response.ok:
-                    await text_channel.send(format_login_response(member.name, response.json()))
+                    await text_channel.send(format_login_response(response.json()))
                 else:
                     await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
                         result, response))
