@@ -27,28 +27,29 @@ async def on_message(message):
     if lowercase_msg.startswith('register'):
         msgs = message.content.split()
         if len(msgs) == 2:
-            user_name = msgs[1].replace("#", "-")
-            await register_user(user_name)
+            discord_user_name = message.author.name
+            battlenet_id = msgs[1]
+            register_user(discord_user_name, battlenet_id)
+            await message.channel.send('Registration complete.')
         else:
             await message.channel.send(
                 'Registration failed please type "register <Battle Tag>".')
     elif lowercase_msg.startswith('unregister'):
         msgs = message.content.split()
         if len(msgs) == 2:
-            user_name = msgs[1].replace("#", "-")
             storage.remove(
-                {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: user_name})
+                {MongoConstants.DISCORD_NAME_FIELD: message.author.name,
+                 MongoConstants.BNET_ID_FIELD: msgs[1].replace("#", "-")})
             await message.channel.send('Unregistered.')
         elif len(msgs) == 1:
             storage.remove({MongoConstants.DISCORD_NAME_FIELD: message.author.name})
             await message.channel.send('Unregistered.')
 
 
-async def register_user(message):
-    document = {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]}
+async def register_user(discord_user_name, battle_net_id):
+    document = {MongoConstants.DISCORD_NAME_FIELD: discord_user_name, MongoConstants.BNET_ID_FIELD: battle_net_id}
     if not storage.find_one(document):
         storage.insert_one(document)
-    await message.channel.send('Registration complete.')
 
 
 @client.event
