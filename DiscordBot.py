@@ -44,6 +44,7 @@ async def on_member_join(member):
 
 def format_login_response(name, stats):
     output = "[Battle.net Tag {}]. \nYour top heroes this season are:\n".format(stats["name"])
+    print("{}".format(output))
     top_heroes = sort_top_heroes(stats)
 
     for x in top_heroes:
