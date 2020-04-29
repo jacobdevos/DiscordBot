@@ -60,7 +60,8 @@ def format_login_response(name, stats):
     raw_top_heroes = stats["competitiveStats"]["topHeroes"]
     raw_top_hero_keys = get_sorted_hero_keys(raw_top_heroes)
 
-    for raw_top_hero_key in raw_top_hero_keys:
+    # Get top 5 heroes.
+    for raw_top_hero_key in raw_top_hero_keys[:5]:
         output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(raw_top_hero_key.capitalize(),
                                                                                           raw_top_heroes[
                                                                                               raw_top_hero_key][
