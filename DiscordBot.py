@@ -71,7 +71,7 @@ def sort_top_heroes(stats):
     raw_top_heroes = stats["competitiveStats"]["topHeroes"]
     print("pre-pruned: {}".format(raw_top_heroes))
 
-    for hero in raw_top_heroes:
+    for hero in raw_top_heroes.keys():
         if raw_top_heroes[hero]["gamesWon"] == 0:
             del raw_top_heroes[hero]
 
