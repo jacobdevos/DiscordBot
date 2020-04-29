@@ -25,12 +25,19 @@ async def on_message(message):
         return
     lowercase_msg = message.content.lower()
     if lowercase_msg.startswith('register'):
-        await register_user(message)
+        msgs = message.content.split()
+        if len(msgs) == 2:
+            user_name = msgs[1].replace("#", "-")
+            await register_user(user_name)
+        else:
+            await message.channel.send(
+                'Registration failed please type "register <Battle Tag>".')
     elif lowercase_msg.startswith('unregister'):
         msgs = message.content.split()
-        if len(msgs) == 2 and "#" not in msgs[1]:
+        if len(msgs) == 2:
+            user_name = msgs[1].replace("#", "-")
             storage.remove(
-                {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]})
+                {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: user_name})
             await message.channel.send('Unregistered.')
         elif len(msgs) == 1:
             storage.remove({MongoConstants.DISCORD_NAME_FIELD: message.author.name})
@@ -38,16 +45,10 @@ async def on_message(message):
 
 
 async def register_user(message):
-    msgs = message.content.split()
-    if len(msgs) == 2 and "#" not in msgs[1]:
-        document = {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]}
-        if not storage.find_one(document):
-            storage.insert_one(document)
-        await message.channel.send('Registration complete.')
-
-    else:
-        await message.channel.send(
-            'Registration failed please type "register <Battle Tag>". Replace the "#" character with a "-".')
+    document = {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]}
+    if not storage.find_one(document):
+        storage.insert_one(document)
+    await message.channel.send('Registration complete.')
 
 
 @client.event
