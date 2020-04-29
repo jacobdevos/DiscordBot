@@ -3,10 +3,11 @@ import os
 import discord
 import requests
 
+import MongoConstants
+import MongoDb
+
 client = discord.Client()
-overwatch_dictionary = {}
-
-
+storage = MongoDb.get_discord_mongo_table()
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
@@ -20,20 +21,31 @@ def get_token():
 async def on_message(message):
     if message.author == client.user:
         return
-
-    if message.content.startswith('$hello'):
-        if isinstance(message.author, discord.member.Member):
-            await message.channel.send('Hello {}!'.format(message.author.display_name))
-        else:
-            await message.channel.send('Hello {}!'.format(message.author))
-    elif message.content.lower().startswith('register'):
+    lowercase_msg = message.content.lower()
+    if lowercase_msg.startswith('register'):
+        await register_user(message)
+    elif lowercase_msg.startswith('unregister'):
         msgs = message.content.split()
         if len(msgs) == 2 and "#" not in msgs[1]:
-            overwatch_dictionary[message.author.name] = msgs[1]
-            await message.channel.send('Registration complete.')
-        else:
-            await message.channel.send(
-                'Registration failed please type "register <Battle Tag>". Replace the "#" character with a "-".')
+            storage.remove(
+                {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]})
+            await message.channel.send('Unregistered.')
+        elif len(msgs) == 1:
+            storage.remove({MongoConstants.DISCORD_NAME_FIELD: message.author.name})
+            await message.channel.send('Unregistered.')
+
+
+async def register_user(message):
+    msgs = message.content.split()
+    if len(msgs) == 2 and "#" not in msgs[1]:
+        document = {MongoConstants.DISCORD_NAME_FIELD: message.author.name, MongoConstants.BNET_ID_FIELD: msgs[1]}
+        if not storage.find_one(document):
+            storage.insert_one(document)
+        await message.channel.send('Registration complete.')
+
+    else:
+        await message.channel.send(
+            'Registration failed please type "register <Battle Tag>". Replace the "#" character with a "-".')
 
 
 @client.event
@@ -42,11 +54,11 @@ async def on_member_join(member):
 
 
 def format_login_response(name, stats):
-    output = "Welcome back {} [Battle.net Tag {}]. \nYour top heroes this season are:\n".format(name, stats["name"])
+    output = "[Battle.net Tag {}]. \nYour top heroes this season are:\n".format(stats["name"])
     top_heroes = sort_top_heroes(stats)
 
     for x in top_heroes:
-        output += "\t\t{}: Win percentage: {} | games won: {} | time played: {}\n".format(x.capitalize(),
+        output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(x.capitalize(),
                                                                                           top_heroes[x][
                                                                                               "winPercentage"],
                                                                                           top_heroes[x]["gamesWon"],
@@ -74,17 +86,24 @@ async def on_voice_state_update(member, before, after):
     text_channel = member.guild.text_channels[0]
     if (
             before.channel is None or before.channel.name != "General") and after.channel is not None and after.channel.name == "General":
-        if member.name not in overwatch_dictionary:
+        result_set = get_battle_net_ids(member.name, storage)
+        if result_set.count() == 0:
             await text_channel.send('Hello {}'.format(member.display_name))
         else:
+            await text_channel.send("Welcome back {}.".format(member.name))
+            for result in result_set:
+                response = requests.get(
+                    'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(result[MongoConstants.BNET_ID_FIELD]))
+                if response.ok:
+                    await text_channel.send(format_login_response(member.name, response.json()))
+                else:
+                    await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
+                        result, response))
 
-            response = requests.get(
-                'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(overwatch_dictionary[member.name]))
-            if response.ok:
-                await text_channel.send(format_login_response(member.name, response.json()))
-            else:
-                await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
-                    overwatch_dictionary[member.name], response))
+
+def get_battle_net_ids(discordName, table):
+    return table.find({MongoConstants.DISCORD_NAME_FIELD: discordName})
+
 
 
 client.run(get_token())
