@@ -76,11 +76,12 @@ def format_login_response(name, stats):
 
 
 def get_sorted_hero_keys(raw_top_heroes):
+    # prune the list for any `0 gamesWon` values
     delete = [key for key in raw_top_heroes if int(raw_top_heroes[key]["gamesWon"]) == 0]
     for key in delete:
         del raw_top_heroes[key]
 
-    print("pruned heroes list: {}".format(raw_top_heroes))
+    # Sort list by highest win percentage
     hero_keys = raw_top_heroes.keys()
     hero_keys = sorted(hero_keys, key=lambda key: int(raw_top_heroes[key]["winPercentage"]))
     hero_keys.reverse()
