@@ -8,6 +8,8 @@ import MongoDb
 
 client = discord.Client()
 storage = MongoDb.get_discord_mongo_table()
+
+
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
@@ -71,8 +73,9 @@ def sort_top_heroes(stats):
     raw_top_heroes = stats["competitiveStats"]["topHeroes"]
     print("pre-pruned: {}".format(raw_top_heroes))
 
-    delete = [key for key in raw_top_heroes if raw_top_heroes[key]["gamesWon"] == 0]
-    for key in delete: del raw_top_heroes[key]
+    delete = [key for key in raw_top_heroes if int(raw_top_heroes[key]["gamesWon"]) == 0]
+    for key in delete:
+        del raw_top_heroes[key]
 
     print("pruned heroes list: {}".format(raw_top_heroes))
     sorted(raw_top_heroes, key=lambda hero: float(hero["winPercentage"]))
@@ -102,7 +105,6 @@ async def on_voice_state_update(member, before, after):
 
 def get_battle_net_ids(discordName, table):
     return table.find({MongoConstants.DISCORD_NAME_FIELD: discordName})
-
 
 
 client.run(get_token())
