@@ -78,10 +78,7 @@ def sort_top_heroes(stats):
         del raw_top_heroes[key]
 
     print("pruned heroes list: {}".format(raw_top_heroes))
-    hero_keys = raw_top_heroes.keys()
-    sorted(raw_top_heroes, key=lambda key: int(raw_top_heroes[key]["winPercentage"]))
-    print("sorted heroes list {}".format(raw_top_heroes))
-    sorted_heroes = [raw_top_heroes[key] for key in hero_keys]
+    sorted_heroes = sorted(raw_top_heroes.items(), key=lambda kv: (kv[1]["gamesWon"], kv[0]))
     return sorted_heroes
 
 
