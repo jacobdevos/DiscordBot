@@ -57,29 +57,34 @@ async def on_member_join(member):
 
 def format_login_response(name, stats):
     output = "[Battle.net Tag {}]. \nYour top heroes this season are:\n".format(stats["name"])
-    top_heroes = sort_top_heroes(stats)
+    raw_top_heroes = stats["competitiveStats"]["topHeroes"]
+    raw_top_hero_keys = get_sorted_hero_keys(raw_top_heroes)
 
-    for x in top_heroes:
-        output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(x.capitalize(),
-                                                                                          top_heroes[x][
+    for raw_top_hero_key in raw_top_hero_keys:
+        output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(raw_top_hero_key.capitalize(),
+                                                                                          raw_top_heroes[
+                                                                                              raw_top_hero_key][
                                                                                               "winPercentage"],
-                                                                                          top_heroes[x]["gamesWon"],
-                                                                                          top_heroes[x]["timePlayed"])
+                                                                                          raw_top_heroes[
+                                                                                              raw_top_hero_key][
+                                                                                              "gamesWon"],
+                                                                                          raw_top_heroes[
+                                                                                              raw_top_hero_key][
+                                                                                              "timePlayed"])
 
     return output
 
 
-def sort_top_heroes(stats):
-    raw_top_heroes = stats["competitiveStats"]["topHeroes"]
-    print("pre-pruned: {}".format(raw_top_heroes))
-
+def get_sorted_hero_keys(raw_top_heroes):
     delete = [key for key in raw_top_heroes if int(raw_top_heroes[key]["gamesWon"]) == 0]
     for key in delete:
         del raw_top_heroes[key]
 
     print("pruned heroes list: {}".format(raw_top_heroes))
-    sorted_heroes = sorted(raw_top_heroes.items(), key=lambda kv: (kv[1]["gamesWon"], kv[0]))
-    return sorted_heroes
+    hero_keys = raw_top_heroes.keys()
+    sorted(hero_keys, key=lambda key: int(raw_top_heroes[key]["winPercentage"]))
+    print("sorted key  list {}".format(hero_keys))
+    return hero_keys
 
 
 @client.event
