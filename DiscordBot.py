@@ -79,9 +79,10 @@ def sort_top_heroes(stats):
 
     print("pruned heroes list: {}".format(raw_top_heroes))
     hero_keys = raw_top_heroes.keys()
-    sorted(hero_keys, key=lambda key: float(raw_top_heroes[key]["winPercentage"]))
+    sorted(raw_top_heroes, key=lambda key: int(raw_top_heroes[key]["winPercentage"]))
     print("sorted heroes list {}".format(raw_top_heroes))
-    return raw_top_heroes
+    sorted_heroes = [raw_top_heroes[key] for key in hero_keys]
+    return sorted_heroes
 
 
 @client.event
