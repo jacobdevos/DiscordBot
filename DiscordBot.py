@@ -29,7 +29,7 @@ async def on_message(message):
         if len(msgs) == 2:
             discord_user_name = message.author.name
             battlenet_id = msgs[1]
-            register_user(discord_user_name, battlenet_id)
+            await register_user(discord_user_name, battlenet_id)
             await message.channel.send('Registration complete.')
         else:
             await message.channel.send(
