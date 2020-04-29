@@ -71,9 +71,8 @@ def sort_top_heroes(stats):
     raw_top_heroes = stats["competitiveStats"]["topHeroes"]
     print("pre-pruned: {}".format(raw_top_heroes))
 
-    for hero in raw_top_heroes.keys():
-        if raw_top_heroes[hero]["gamesWon"] == 0:
-            del raw_top_heroes[hero]
+    delete = [key for key in raw_top_heroes if raw_top_heroes[key]["gamesWon"] == 0]
+    for key in delete: del raw_top_heroes[key]
 
     print("pruned heroes list: {}".format(raw_top_heroes))
     sorted(raw_top_heroes, key=lambda hero: float(hero["winPercentage"]))
