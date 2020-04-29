@@ -58,7 +58,7 @@ async def on_member_join(member):
 
 
 def format_login_response(stats):
-    output = "[Battle.net Tag {}]. \nYour top heroes this season are:\n".format(stats["name"])
+    output = "[Battle.net Tag {}]. \nYour top 5 heroes this season are:\n".format(stats["name"])
     raw_top_heroes = stats["competitiveStats"]["topHeroes"]
     raw_top_hero_keys = get_sorted_hero_keys(raw_top_heroes)
 
