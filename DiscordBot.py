@@ -78,7 +78,8 @@ def sort_top_heroes(stats):
         del raw_top_heroes[key]
 
     print("pruned heroes list: {}".format(raw_top_heroes))
-    sorted(raw_top_heroes, key=lambda hero: float(hero["winPercentage"]))
+    hero_keys = raw_top_heroes.keys()
+    sorted(hero_keys, key=lambda key: float(raw_top_heroes[key]["winPercentage"]))
     print("sorted heroes list {}".format(raw_top_heroes))
     return raw_top_heroes
 
