@@ -43,16 +43,32 @@ async def on_member_join(member):
 
 
 def format_login_response(name, stats):
-    output = "Welcome back {} [Battle.net Tag {}]. \nYour top heroes this season are:\n".format(name, stats["name"])
-    top_heroes = stats["competitiveStats"]["topHeroes"]
+    output = "[Battle.net Tag {}]. \nYour top heroes this season are:\n".format(stats["name"])
+    top_heroes = sort_top_heroes(stats)
+
     for x in top_heroes:
-        output += "\t\t{}: Win percentage: {} | games won: {} | time played: {}\n".format(x.capitalize(),
+        output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(x.capitalize(),
                                                                                           top_heroes[x][
                                                                                               "winPercentage"],
                                                                                           top_heroes[x]["gamesWon"],
                                                                                           top_heroes[x]["timePlayed"])
 
     return output
+
+
+def sort_top_heroes(stats):
+    raw_top_heroes = stats["competitiveStats"]["topHeroes"]
+    print("pre-pruned: {}", raw_top_heroes)
+
+    for hero in raw_top_heroes:
+        if int(hero["gamesWon"]) == 0:
+            del raw_top_heroes[hero]
+
+    print("pruned heroes list: {}", raw_top_heroes)
+    sorted(raw_top_heroes, key=lambda hero: float(hero["winPercentage"]))
+    print("sorted heroes list {}", raw_top_heroes)
+    return raw_top_heroes
+
 
 
 @client.event
