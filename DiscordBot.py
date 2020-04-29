@@ -1,12 +1,11 @@
 import os
-import sqlite3
-from sqlite3 import Error
 
 import discord
 import requests
 
 client = discord.Client()
 overwatch_dictionary = {}
+
 
 @client.event
 async def on_ready():
@@ -44,7 +43,8 @@ async def on_member_join(member):
 
 def format_login_response(name, stats):
     output = "Welcome back {} [Battle.net Tag {}]. \nYour top heroes this season are:\n".format(name, stats["name"])
-    top_heroes = stats["competitiveStats"]["topHeroes"]
+    top_heroes = sort_top_heroes(stats)
+
     for x in top_heroes:
         output += "\t\t{}: Win percentage: {} | games won: {} | time played: {}\n".format(x.capitalize(),
                                                                                           top_heroes[x][
@@ -53,6 +53,20 @@ def format_login_response(name, stats):
                                                                                           top_heroes[x]["timePlayed"])
 
     return output
+
+
+def sort_top_heroes(stats):
+    raw_top_heroes = stats["competitiveStats"]["topHeroes"]
+    print("pre-pruned: {}", raw_top_heroes)
+
+    for hero in raw_top_heroes:
+        if int(hero["gamesWon"]) == 0:
+            del raw_top_heroes[hero]
+
+    print("pruned heroes list: {}", raw_top_heroes)
+    sorted(raw_top_heroes, key=lambda hero: float(hero["winPercentage"]))
+    print("sorted heroes list {}", raw_top_heroes)
+    return raw_top_heroes
 
 
 @client.event
@@ -71,5 +85,6 @@ async def on_voice_state_update(member, before, after):
             else:
                 await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
                     overwatch_dictionary[member.name], response))
+
 
 client.run(get_token())
