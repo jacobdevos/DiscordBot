@@ -61,7 +61,6 @@ async def on_member_join(member):
 def format_login_response(stats, battle_net_tag):
     output = "[Battle.net Tag {}]. \nYour top 5 heroes this season are:\n".format(stats["name"])
     raw_top_heroes = stats["competitiveStats"]["topHeroes"]
-    print("topHeroes: {}".format(raw_top_heroes))
     raw_top_hero_keys = get_sorted_hero_keys(raw_top_heroes)
 
     # Get top 5 heroes.
@@ -72,7 +71,8 @@ def format_login_response(stats, battle_net_tag):
                 hero=raw_top_hero_key))
 
         if hero_stats is not None:
-            games_played = hero_stats["competitiveStats"]["games"]["won"]
+            games_played = hero_stats["competitiveStats"]["games"]["played"]
+            print('games played: {}'.format(games_played))
             output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
                 raw_top_hero_key.capitalize(),
                 raw_top_heroes[
