@@ -109,7 +109,7 @@ async def on_voice_state_update(member, before, after):
                 uri = 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnet_user_name.replace("#", "-"))
                 response = http_get(uri)
                 if response is not None:
-                    await text_channel.send(format_login_response(response.json(), bnet_user_name))
+                    await text_channel.send(format_login_response(response, bnet_user_name))
                 else:
                     await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
                         bnet_user_name, response))
