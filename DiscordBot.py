@@ -114,8 +114,8 @@ async def on_voice_state_update(member, before, after):
 def is_stats_channel(before_channel, after_channel):
     stats_channel = False
     # if the voice channel changed and this isn't some other voice state update
-    if after_channel.channel is not None and before_channel.channel is None or \
-            before_channel.channel.name is not after_channel.channel.name:
+    if after_channel.channel is not None and (before_channel.channel is None or \
+                                              before_channel.channel.name is not after_channel.channel.name):
         for entry in bot_channels:
             if after_channel.channel.guild.name == entry[0] and after_channel.channel.name == entry[1]:
                 stats_channel = True
