@@ -1,4 +1,5 @@
 import os
+import random
 
 import discord
 import requests
@@ -58,50 +59,56 @@ async def on_member_join(member):
     await member.guild.text_channels[0].send('Hello {}!'.format(member.display_name))
 
 
-def format_login_response(stats, battle_net_tag):
-    output = "[Battle.net Tag {}]. \nYour top 5 heroes this season are:\n".format(stats["name"])
-    raw_top_heroes = stats["competitiveStats"]["topHeroes"]
-    raw_top_hero_keys = get_sorted_hero_keys(raw_top_heroes)
+def get_formatted_stats(stats, battle_net_tag):
+    top_heroes_stats_raw = stats["competitiveStats"]["topHeroes"]
+    # get top 5 hero names
+    top_hero_names = get_top_heroes_sorted(top_heroes_stats_raw, 5)
 
-    # Get top 5 heroes.
-    for raw_top_hero_key in raw_top_hero_keys[:5]:
+    output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(stats["name"], len(top_hero_names))
+    for raw_top_hero_key in top_hero_names:
         hero_stats = http_get(
             "https://ow-api.com/v1/stats/pc/us/{battle_tag}/heroes/{hero}".format(
                 battle_tag=battle_net_tag.replace("#", "-"),
                 hero=raw_top_hero_key))
-
         if hero_stats is not None:
-            games_played = hero_stats["competitiveStats"]["careerStats"][raw_top_hero_key]["game"]["gamesPlayed"]
-            print('games played: {}'.format(games_played))
-            output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
-                raw_top_hero_key.capitalize(),
-                raw_top_heroes[
-                    raw_top_hero_key][
-                    "winPercentage"],
-                raw_top_heroes[
-                    raw_top_hero_key][
-                    "gamesWon"],
-                games_played,
-                raw_top_heroes[
-                    raw_top_hero_key][
-                    "timePlayed"])
+            hero_stats_dict = hero_stats["competitiveStats"]["careerStats"][raw_top_hero_key]
+            values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
+            output += "\t\t{}: {}\n".format(raw_top_hero_key.capitalize(), values)
+
+
+        # if hero_stats is not None:
+        #     games_played = hero_stats["competitiveStats"]["careerStats"][raw_top_hero_key]["game"]["gamesPlayed"]
+        #     print('games played: {}'.format(games_played))
+        #     output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
+        #         raw_top_hero_key.capitalize(),
+        #         top_heroes_stats_raw[
+        #             raw_top_hero_key][
+        #             "winPercentage"],
+        #         top_heroes_stats_raw[
+        #             raw_top_hero_key][
+        #             "gamesWon"],
+        #         games_played,
+        #         top_heroes_stats_raw[
+        #             raw_top_hero_key][
+        #             "timePlayed"])
+        
         else:
             output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(
                 raw_top_hero_key.capitalize(),
-                raw_top_heroes[
+                top_heroes_stats_raw[
                     raw_top_hero_key][
                     "winPercentage"],
-                raw_top_heroes[
+                top_heroes_stats_raw[
                     raw_top_hero_key][
                     "gamesWon"],
-                raw_top_heroes[
+                top_heroes_stats_raw[
                     raw_top_hero_key][
                     "timePlayed"])
 
     return output
 
 
-def get_sorted_hero_keys(raw_top_heroes):
+def get_top_heroes_sorted(raw_top_heroes, max_number_of_heroes):
     # prune the list for any `0 gamesWon` values
     delete = [key for key in raw_top_heroes if int(raw_top_heroes[key]["gamesWon"]) < 10]
     for key in delete:
@@ -111,7 +118,8 @@ def get_sorted_hero_keys(raw_top_heroes):
     hero_keys = raw_top_heroes.keys()
     hero_keys = sorted(hero_keys, key=lambda key: int(raw_top_heroes[key]["winPercentage"]))
     hero_keys.reverse()
-    return hero_keys
+
+    return hero_keys[:max_number_of_heroes]
 
 
 @client.event
@@ -126,7 +134,8 @@ async def on_voice_state_update(member, before, after):
                 uri = 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnet_user_name.replace("#", "-"))
                 response = http_get(uri)
                 if response is not None:
-                    await text_channel.send(format_login_response(response, bnet_user_name))
+                    stats = get_formatted_stats(response, bnet_user_name)
+                    await text_channel.send(stats)
                 else:
                     await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
                         bnet_user_name, response))
@@ -155,6 +164,26 @@ def is_stats_channel(before_channel, after_channel):
 
 def get_battle_net_ids(discordName, table):
     return table.find({MongoConstants.DISCORD_NAME_FIELD: discordName})
+
+
+def get_random_dict_values(dict, num_of_values):
+    keys = dict.keys()
+    random_indexes = get_list_of_random_numbers(0, len(keys), num_of_values)
+    list_of_random_values = []
+    for index in random_indexes:
+        list_of_random_values.append((keys[index], dict[keys[index]]))
+    return list_of_random_values
+
+
+def get_list_of_random_numbers(min_num, max_num, size_of_list):
+    assert (size_of_list > max_num - min_num)
+    list_of_random_numbers = []
+    for i in range(0, size_of_list):
+        random_number = random.randint(min_num, max_num)
+        while random_number in list_of_random_numbers:
+            random_number = random.randint(min_num, max_num)
+        list_of_random_numbers.append(random_number)
+    return list_of_random_numbers
 
 
 client.run(get_token())
