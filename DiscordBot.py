@@ -60,17 +60,19 @@ async def on_member_join(member):
 
 
 def get_formatted_stats(stats, battle_net_tag):
-    random_stats = True
+    random_stats = random.randint(0, 1)
     top_heroes_stats_raw = stats["competitiveStats"]["topHeroes"]
     # get top 5 hero names
     top_hero_names = get_top_heroes_sorted(top_heroes_stats_raw, 5)
 
     output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(stats["name"], len(top_hero_names))
     for raw_top_hero_key in top_hero_names:
+
         hero_stats = http_get(
             "https://ow-api.com/v1/stats/pc/us/{battle_tag}/heroes/{hero}".format(
                 battle_tag=battle_net_tag.replace("#", "-"),
                 hero=raw_top_hero_key))
+        
         if random_stats and hero_stats is not None:
             hero_stats_dict = hero_stats["competitiveStats"]["careerStats"][raw_top_hero_key]
             values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
