@@ -186,7 +186,7 @@ def get_random_stat(stats_dict):
     if type(value) is not dict:
         kvlist = [key, value]
         print("random_stat={}".format(kvlist))
-        return [key, value]
+        return kvlist
     else:
         get_random_stat(value)
 
