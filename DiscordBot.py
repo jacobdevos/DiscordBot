@@ -93,6 +93,7 @@ def get_sorted_hero_keys(raw_top_heroes):
 
 @client.event
 async def on_voice_state_update(member, before, after):
+    print("guild = <{}> voice channel = <{}>".format(after.channel.guild.name, after.channel.name))
     text_channel = member.guild.text_channels[0]
     if (
             before.channel is None or before.channel.name != "General") and after.channel is not None and after.channel.name == "General":
