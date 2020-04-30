@@ -167,24 +167,23 @@ def get_battle_net_ids(discordName, table):
     return table.find({MongoConstants.DISCORD_NAME_FIELD: discordName})
 
 
-def get_random_dict_values(dict, num_of_values):
-    keys = dict.keys()
-    random_indexes = get_list_of_random_numbers(0, len(keys), num_of_values)
-    list_of_random_values = []
-    for index in random_indexes:
-        list_of_random_values.append((keys[index], dict[keys[index]]))
-    return list_of_random_values
+def get_random_dict_values(dict_of_dicts, num_of_values):
+    random_values = []
+    for i in range(0, num_of_values):
+        random_stat = get_random_stat(dict_of_dicts)
+        while random_stat in random_values:
+            random_stat = get_random_stat(dict_of_dicts)
+        random_values.append(get_random_stat(dict_of_dicts))
+    print('random values <{}>'.format(random_values))
+    return random_values
 
 
-def get_list_of_random_numbers(min_num, max_num, size_of_list):
-    assert (size_of_list > max_num - min_num)
-    list_of_random_numbers = []
-    for i in range(0, size_of_list):
-        random_number = random.randint(min_num, max_num)
-        while random_number in list_of_random_numbers:
-            random_number = random.randint(min_num, max_num)
-        list_of_random_numbers.append(random_number)
-    return list_of_random_numbers
+def get_random_stat(stats_dict):
+    keys = stats_dict.keys()
+    if len(keys) == 1:
+        return keys[0], stats_dict[keys]
+    else:
+        get_random_stat(stats_dict[keys[random.randint(0, len(keys))]])
 
 
 client.run(get_token())
