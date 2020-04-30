@@ -39,7 +39,7 @@ async def on_message(message):
         if len(msgs) == 2:
             storage.remove(
                 {MongoConstants.DISCORD_NAME_FIELD: message.author.name,
-                 MongoConstants.BNET_ID_FIELD: msgs[1].replace("#", "-")})
+                 MongoConstants.BNET_ID_FIELD: msgs[1]})
             await message.channel.send('Unregistered.')
         elif len(msgs) == 1:
             storage.remove({MongoConstants.DISCORD_NAME_FIELD: message.author.name})
@@ -102,7 +102,8 @@ async def on_voice_state_update(member, before, after):
             await text_channel.send("Welcome back {}.".format(member.name))
             for result in result_set:
                 response = requests.get(
-                    'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(result[MongoConstants.BNET_ID_FIELD]))
+                    'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(
+                        result[MongoConstants.BNET_ID_FIELD].replace("#", "-")))
                 if response.ok:
                     await text_channel.send(format_login_response(response.json()))
                 else:
