@@ -63,22 +63,18 @@ def get_formatted_stats(stats, battle_net_tag):
     random_stats = True
     top_heroes_stats_raw = stats["competitiveStats"]["topHeroes"]
     # get top 5 hero names
-    top_hero_names = get_top_heroes_sorted(top_heroes_stats_raw, 5)
+    top_hero_names = get_top_heroes_sorted(stats, 5)
 
     output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(stats["name"], len(top_hero_names))
-    hero_stats = http_get(
-        "https://ow-api.com/v1/stats/pc/us/{battle_tag}/heroes/{hero}".format(
-            battle_tag=battle_net_tag.replace("#", "-"),
-            hero=",".join(top_hero_names)))
 
     for top_hero in top_hero_names:
 
-        if random_stats and hero_stats is not None:
-            hero_stats_dict = hero_stats["competitiveStats"]["careerStats"][top_hero]
+        if random_stats:
+            hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
             values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
             output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
-        elif hero_stats is not None:
-            games_played = hero_stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
+        else:
+            games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
             output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
                 top_hero.capitalize(),
                 top_heroes_stats_raw[
@@ -91,31 +87,20 @@ def get_formatted_stats(stats, battle_net_tag):
                 top_heroes_stats_raw[
                     top_hero][
                     "timePlayed"])
-        else:
-            output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(
-                top_hero.capitalize(),
-                top_heroes_stats_raw[
-                    top_hero][
-                    "winPercentage"],
-                top_heroes_stats_raw[
-                    top_hero][
-                    "gamesWon"],
-                top_heroes_stats_raw[
-                    top_hero][
-                    "timePlayed"])
-
     return output
 
 
-def get_top_heroes_sorted(raw_top_heroes, max_number_of_heroes):
-    # prune the list for any `0 gamesWon` values
-    delete = [key for key in raw_top_heroes if int(raw_top_heroes[key]["gamesWon"]) < 5]
+def get_top_heroes_sorted(stats, max_number_of_heroes):
+    # prune the list for any `0` gamesplayed` values
+    top_heroes = stats["competitiveStats"]["topHeroes"]
+    delete = [key for key in top_heroes if
+              int(stats["competitiveStats"]["careerStats"][key]["game"]["gamesPlayed"]) < 10]
     for key in delete:
-        del raw_top_heroes[key]
+        del top_heroes[key]
 
     # Sort list by highest win percentage
-    hero_keys = raw_top_heroes.keys()
-    hero_keys = sorted(hero_keys, key=lambda key: int(raw_top_heroes[key]["winPercentage"]))
+    hero_keys = top_heroes.keys()
+    hero_keys = sorted(hero_keys, key=lambda key: int(top_heroes[key]["winPercentage"]))
     hero_keys.reverse()
 
     return hero_keys[:max_number_of_heroes]
