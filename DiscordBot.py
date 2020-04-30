@@ -187,11 +187,9 @@ def get_random_stat(stats_dict):
     key = keys[random.randint(0, len(keys) - 1)]
     value = stats_dict[key]
     if type(value) is not dict:
-        ret_val = [key, value]
+        return [key, value]
     else:
-        get_random_stat(value)
-    print("ret_val = {}".format(ret_val))
-    return ret_val
+        return get_random_stat(value)
 
 
 client.run(get_token())
