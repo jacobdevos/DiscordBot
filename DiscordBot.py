@@ -67,8 +67,9 @@ def format_login_response(stats, battle_net_tag):
     # Get top 5 heroes.
     for raw_top_hero_key in raw_top_hero_keys[:5]:
         response = http_get(
-            "https://ow-api.com/v1/stats/pc/us/{battle_tag}/heroes/{hero}".format(battle_tag=battle_net_tag,
-                                                                                  hero=raw_top_hero_key))
+            "https://ow-api.com/v1/stats/pc/us/{battle_tag}/heroes/{hero}".format(
+                battle_tag=battle_net_tag.replace("#", "-"),
+                hero=raw_top_hero_key))
         if response is not None:
             games_played = response["competitiveStats"]["games"]["won"]
             print("response {}".format(response))
