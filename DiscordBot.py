@@ -59,23 +59,24 @@ async def on_member_join(member):
     await member.guild.text_channels[0].send('Hello {}!'.format(member.display_name))
 
 
-def get_formatted_stats(stats, battle_net_tag):
+def get_formatted_stats(stats):
     random_stats = True
     top_heroes_stats_raw = stats["competitiveStats"]["topHeroes"]
     # get top 5 hero names
     top_hero_names = get_top_heroes_sorted(stats, 5)
 
-    output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(stats["name"], len(top_hero_names))
+    msg_output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(stats["name"],
+                                                                                       len(top_hero_names))
 
     for top_hero in top_hero_names:
 
         if random_stats:
             hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
             values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
-            output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
+            msg_output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
         else:
             games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
-            output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
+            msg_output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
                 top_hero.capitalize(),
                 top_heroes_stats_raw[
                     top_hero][
@@ -87,12 +88,12 @@ def get_formatted_stats(stats, battle_net_tag):
                 top_heroes_stats_raw[
                     top_hero][
                     "timePlayed"])
-    return output
+    return msg_output
 
 
 def get_top_heroes_sorted(stats, max_number_of_heroes):
-    # prune the list for any `0` gamesplayed` values
     top_heroes = stats["competitiveStats"]["topHeroes"]
+    # prune the list so that only heroes which have been played 10 or more times are considered
     delete = [key for key in top_heroes if
               int(stats["competitiveStats"]["careerStats"][key]["game"]["gamesPlayed"]) < 10]
     for key in delete:
@@ -122,7 +123,7 @@ async def post_bnet_stats(bnet_user_name, text_channel):
     uri = 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnet_user_name.replace("#", "-"))
     response = http_get(uri)
     if response is not None:
-        stats = get_formatted_stats(response, bnet_user_name)
+        stats = get_formatted_stats(response)
         await text_channel.send(stats)
     else:
         await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
