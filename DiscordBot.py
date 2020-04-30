@@ -176,8 +176,8 @@ def get_random_dict_values(dict_of_dicts, num_of_values):
             key_value = get_random_stat(dict_of_dicts)
         random_stat_tuples.append(key_value)
 
-    for tuple in random_stat_tuples:
-        random_values.append("{}: {}".format(str(tuple[0]), str(tuple[1])))
+    for random_stat in random_stat_tuples:
+        random_values.append("{}: {}".format(str(random_stat[0]), str(random_stat[1])))
 
     return random_values
 
