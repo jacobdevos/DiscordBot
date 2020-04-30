@@ -72,6 +72,7 @@ def get_formatted_stats(stats, battle_net_tag):
                 hero=raw_top_hero_key))
         if hero_stats is not None:
             hero_stats_dict = hero_stats["competitiveStats"]["careerStats"][raw_top_hero_key]
+            print('hero stats = {}'.format(hero_stats_dict))
             values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
             output += "\t\t{}: {}\n".format(raw_top_hero_key.capitalize(), values)
 
@@ -91,7 +92,7 @@ def get_formatted_stats(stats, battle_net_tag):
         #         top_heroes_stats_raw[
         #             raw_top_hero_key][
         #             "timePlayed"])
-        
+
         else:
             output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(
                 raw_top_hero_key.capitalize(),
