@@ -180,11 +180,10 @@ def get_random_dict_values(dict_of_dicts, num_of_values):
 
 def get_random_stat(stats_dict):
     keys = list(stats_dict.keys())
-    print('keys={}'.format(keys))
-    print('stats_dict={}'.format(stats_dict))
     key = keys[random.randint(0, len(keys) - 1)]
     value = stats_dict[key]
     if type(value) is not dict:
+        print("random stat key: {}, val: {}".format(key, value))
         return key, value
     else:
         get_random_stat(value)
