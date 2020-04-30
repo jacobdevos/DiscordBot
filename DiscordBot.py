@@ -109,7 +109,7 @@ def get_formatted_stats(stats, battle_net_tag):
 
 def get_top_heroes_sorted(raw_top_heroes, max_number_of_heroes):
     # prune the list for any `0 gamesWon` values
-    delete = [key for key in raw_top_heroes if int(raw_top_heroes[key]["gamesWon"]) < 10]
+    delete = [key for key in raw_top_heroes if int(raw_top_heroes[key]["gamesWon"]) < 5]
     for key in delete:
         del raw_top_heroes[key]
 
