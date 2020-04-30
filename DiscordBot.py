@@ -171,18 +171,18 @@ def get_random_dict_values(dict_of_dicts, num_of_values):
     random_values = []
     random_stat_tuples = []
     for i in range(0, num_of_values):
-        key_value = get_random_stat(dict_of_dicts)
-        print("key_value = {}".format(key_value))
+        key_value = None
+        while key_value is None or key_value[1] is None or key_value in random_stat_tuples:
+            key_value = get_random_stat(dict_of_dicts)
         random_stat_tuples.append(key_value)
-    print('random stat tuples = {}'.format(random_stat_tuples))
+
     for tuple in random_stat_tuples:
         random_values.append("{}: {}".format(str(tuple[0]), str(tuple[1])))
-    print('random values <{}>'.format(random_values))
+
     return random_values
 
 
 def get_random_stat(stats_dict):
-    ret_val = []
     keys = list(stats_dict.keys())
     key = keys[random.randint(0, len(keys) - 1)]
     value = stats_dict[key]
