@@ -186,7 +186,7 @@ def get_random_stat(stats_dict):
     if type(value) is not dict:
         return keys[0], stats_dict[keys]
     else:
-        get_random_stat(stats_dict[keys[random.randint(0, len(keys) - 1)]])
+        get_random_stat(value)
 
 
 client.run(get_token())
