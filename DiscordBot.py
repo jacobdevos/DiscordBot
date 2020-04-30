@@ -81,7 +81,7 @@ def format_login_response(stats):
 
 def get_sorted_hero_keys(raw_top_heroes):
     # prune the list for any `0 gamesWon` values
-    delete = [key for key in raw_top_heroes if int(raw_top_heroes[key]["gamesWon"]) == 0]
+    delete = [key for key in raw_top_heroes if int(raw_top_heroes[key]["gamesWon"]) < 10]
     for key in delete:
         del raw_top_heroes[key]
 
