@@ -182,15 +182,16 @@ def get_random_dict_values(dict_of_dicts, num_of_values):
 
 
 def get_random_stat(stats_dict):
+    ret_val = []
     keys = list(stats_dict.keys())
     key = keys[random.randint(0, len(keys) - 1)]
     value = stats_dict[key]
     if type(value) is not dict:
-        kvlist = [key, value]
-        print("random_stat={}".format(kvlist))
-        return kvlist
+        ret_val = [key, value]
     else:
         get_random_stat(value)
+    print("ret_val = {}".format(ret_val))
+    return ret_val
 
 
 client.run(get_token())
