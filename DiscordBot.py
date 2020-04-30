@@ -182,7 +182,8 @@ def get_random_stat(stats_dict):
     keys = list(stats_dict.keys())
     print('keys={}'.format(keys))
     print('stats_dict={}'.format(stats_dict))
-    if len(keys) == 1:
+    value = stats_dict[keys[random.randint(0, len(keys) - 1)]]
+    if type(value) is not dict:
         return keys[0], stats_dict[keys]
     else:
         get_random_stat(stats_dict[keys[random.randint(0, len(keys) - 1)]])
