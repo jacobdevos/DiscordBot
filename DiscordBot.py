@@ -8,6 +8,7 @@ import MongoDb
 
 client = discord.Client()
 storage = MongoDb.get_discord_mongo_table()
+bot_channels = [("JakesBotTest", "General"), ("JTMoney", "Broverwatch")]
 
 
 @client.event
@@ -93,10 +94,8 @@ def get_sorted_hero_keys(raw_top_heroes):
 
 @client.event
 async def on_voice_state_update(member, before, after):
-    print("guild = <{}> voice channel = <{}>".format(after.channel.guild.name, after.channel.name))
     text_channel = member.guild.text_channels[0]
-    if (
-            before.channel is None or before.channel.name != "General") and after.channel is not None and after.channel.name == "General":
+    if is_stats_channel(before, after):
         result_set = get_battle_net_ids(member.name, storage)
         if result_set.count() > 0:
             await text_channel.send("Welcome back {}.".format(member.name))
@@ -110,6 +109,18 @@ async def on_voice_state_update(member, before, after):
                 else:
                     await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
                         bnet_user_name, response))
+
+
+def is_stats_channel(before_channel, after_channel):
+    stats_channel = False
+    # if the voice channel changed and this isn't some other voice state update
+    if after_channel.channel is not None and before_channel.channel is None or \
+            before_channel.channel.name is not after_channel.channel.name:
+        for entry in bot_channels:
+            if after_channel.channel.guild.name == entry[0] and after_channel.channel.name == entry[1]:
+                stats_channel = True
+                break;
+    return stats_channel
 
 
 def get_battle_net_ids(discordName, table):
