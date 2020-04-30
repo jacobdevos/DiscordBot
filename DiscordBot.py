@@ -66,42 +66,42 @@ def get_formatted_stats(stats, battle_net_tag):
     top_hero_names = get_top_heroes_sorted(top_heroes_stats_raw, 5)
 
     output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(stats["name"], len(top_hero_names))
-    for raw_top_hero_key in top_hero_names:
+    hero_stats = http_get(
+        "https://ow-api.com/v1/stats/pc/us/{battle_tag}/heroes/{hero}".format(
+            battle_tag=battle_net_tag.replace("#", "-"),
+            hero=",".join(top_hero_names)))
 
-        hero_stats = http_get(
-            "https://ow-api.com/v1/stats/pc/us/{battle_tag}/heroes/{hero}".format(
-                battle_tag=battle_net_tag.replace("#", "-"),
-                hero=raw_top_hero_key))
+    for top_hero in top_hero_names:
 
         if random_stats and hero_stats is not None:
-            hero_stats_dict = hero_stats["competitiveStats"]["careerStats"][raw_top_hero_key]
+            hero_stats_dict = hero_stats["competitiveStats"]["careerStats"][top_hero]
             values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
-            output += "\t\t{}: {}\n".format(raw_top_hero_key.capitalize(), values)
+            output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
         elif hero_stats is not None:
-            games_played = hero_stats["competitiveStats"]["careerStats"][raw_top_hero_key]["game"]["gamesPlayed"]
+            games_played = hero_stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
             output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
-                raw_top_hero_key.capitalize(),
+                top_hero.capitalize(),
                 top_heroes_stats_raw[
-                    raw_top_hero_key][
+                    top_hero][
                     "winPercentage"],
                 top_heroes_stats_raw[
-                    raw_top_hero_key][
+                    top_hero][
                     "gamesWon"],
                 games_played,
                 top_heroes_stats_raw[
-                    raw_top_hero_key][
+                    top_hero][
                     "timePlayed"])
         else:
             output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(
-                raw_top_hero_key.capitalize(),
+                top_hero.capitalize(),
                 top_heroes_stats_raw[
-                    raw_top_hero_key][
+                    top_hero][
                     "winPercentage"],
                 top_heroes_stats_raw[
-                    raw_top_hero_key][
+                    top_hero][
                     "gamesWon"],
                 top_heroes_stats_raw[
-                    raw_top_hero_key][
+                    top_hero][
                     "timePlayed"])
 
     return output
@@ -130,14 +130,18 @@ async def on_voice_state_update(member, before, after):
             await text_channel.send("Welcome back {}.".format(member.name))
             for result in result_set:
                 bnet_user_name = result[MongoConstants.BNET_ID_FIELD]
-                uri = 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnet_user_name.replace("#", "-"))
-                response = http_get(uri)
-                if response is not None:
-                    stats = get_formatted_stats(response, bnet_user_name)
-                    await text_channel.send(stats)
-                else:
-                    await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
-                        bnet_user_name, response))
+                await post_bnet_stats(bnet_user_name, text_channel)
+
+
+async def post_bnet_stats(bnet_user_name, text_channel):
+    uri = 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnet_user_name.replace("#", "-"))
+    response = http_get(uri)
+    if response is not None:
+        stats = get_formatted_stats(response, bnet_user_name)
+        await text_channel.send(stats)
+    else:
+        await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
+            bnet_user_name, response))
 
 
 def http_get(uri):
