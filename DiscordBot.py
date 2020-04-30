@@ -66,26 +66,37 @@ def format_login_response(stats, battle_net_tag):
 
     # Get top 5 heroes.
     for raw_top_hero_key in raw_top_hero_keys[:5]:
-        response = http_get(
+        hero_stats = http_get(
             "https://ow-api.com/v1/stats/pc/us/{battle_tag}/heroes/{hero}".format(
                 battle_tag=battle_net_tag.replace("#", "-"),
                 hero=raw_top_hero_key))
-        if response is not None:
-            games_played = response["competitiveStats"]["games"]["won"]
-            print("response {}".format(response))
 
-            if games_played is not None:
-                print("games played {}".format(games_played))
-        output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(raw_top_hero_key.capitalize(),
-                                                                                          raw_top_heroes[
-                                                                                              raw_top_hero_key][
-                                                                                              "winPercentage"],
-                                                                                          raw_top_heroes[
-                                                                                              raw_top_hero_key][
-                                                                                              "gamesWon"],
-                                                                                          raw_top_heroes[
-                                                                                              raw_top_hero_key][
-                                                                                              "timePlayed"])
+        if hero_stats is not None:
+            games_played = hero_stats["competitiveStats"]["games"]["won"]
+            output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
+                raw_top_hero_key.capitalize(),
+                raw_top_heroes[
+                    raw_top_hero_key][
+                    "winPercentage"],
+                raw_top_heroes[
+                    raw_top_hero_key][
+                    "gamesWon"],
+                games_played,
+                raw_top_heroes[
+                    raw_top_hero_key][
+                    "timePlayed"])
+        else:
+            output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(
+                raw_top_hero_key.capitalize(),
+                raw_top_heroes[
+                    raw_top_hero_key][
+                    "winPercentage"],
+                raw_top_heroes[
+                    raw_top_hero_key][
+                    "gamesWon"],
+                raw_top_heroes[
+                    raw_top_hero_key][
+                    "timePlayed"])
 
     return output
 
