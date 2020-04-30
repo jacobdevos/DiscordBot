@@ -71,6 +71,7 @@ def format_login_response(stats, battle_net_tag):
                 hero=raw_top_hero_key))
 
         if hero_stats is not None:
+            print("hero stats".format(hero_stats))
             games_played = hero_stats["competitiveStats"]["games"]["played"]
             print('games played: {}'.format(games_played))
             output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
