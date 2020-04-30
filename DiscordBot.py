@@ -168,12 +168,16 @@ def get_battle_net_ids(discordName, table):
 
 
 def get_random_dict_values(dict_of_dicts, num_of_values):
+    random_stat_tuples = []
     random_values = []
     for i in range(0, num_of_values):
-        random_stat = get_random_stat(dict_of_dicts)
-        while random_stat in random_values or random_stat[1] is None:
+        random_stat = None
+        while random_stat[1] is None or random_stat in random_values:
             random_stat = get_random_stat(dict_of_dicts)
-        random_values.append("{}: {}".format(str(random_stat[0]), str(random_stat[1])))
+        random_stat_tuples.append(random_stat)
+
+    for tuple in random_stat_tuples:
+        random_values.append("{}: {}".format(str(tuple[0]), str(tuple[1])))
     print('random values <{}>'.format(random_values))
     return random_values
 
