@@ -185,7 +185,7 @@ def get_random_stat(stats_dict):
     if len(keys) == 1:
         return keys[0], stats_dict[keys]
     else:
-        get_random_stat(stats_dict[keys[random.randint(0, len(keys))]])
+        get_random_stat(stats_dict[keys[random.randint(0, len(keys) - 1)]])
 
 
 client.run(get_token())
