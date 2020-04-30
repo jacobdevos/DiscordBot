@@ -188,7 +188,7 @@ def get_random_stat(stats_dict):
     value = stats_dict[key]
     if type(value) is not dict:
         print("random stat key: {}, val: {}".format(key, value))
-        return key, value
+        return [key, value]
     else:
         get_random_stat(value)
 
