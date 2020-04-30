@@ -184,6 +184,8 @@ def get_random_stat(stats_dict):
     key = keys[random.randint(0, len(keys) - 1)]
     value = stats_dict[key]
     if type(value) is not dict:
+        kvlist = [key, value]
+        print("random_stat={}".format(kvlist))
         return [key, value]
     else:
         get_random_stat(value)
