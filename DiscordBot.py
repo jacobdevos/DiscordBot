@@ -125,6 +125,7 @@ def http_get(uri):
     if response.ok:
         return response.json()
     else:
+        print("http get request on uri {} failed with <{}>".format(uri, response))
         return None
 
 
