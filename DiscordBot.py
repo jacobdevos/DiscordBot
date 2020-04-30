@@ -172,7 +172,7 @@ def get_random_dict_values(dict_of_dicts, num_of_values):
     random_values = []
     for i in range(0, num_of_values):
         random_stat = None
-        while random_stat[1] is None or random_stat in random_values:
+        while random_stat is None or random_stat[1] is None or random_stat in random_values:
             random_stat = get_random_stat(dict_of_dicts)
         random_stat_tuples.append(random_stat)
 
