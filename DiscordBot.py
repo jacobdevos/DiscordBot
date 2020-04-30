@@ -171,9 +171,9 @@ def get_random_dict_values(dict_of_dicts, num_of_values):
     random_values = []
     for i in range(0, num_of_values):
         random_stat = get_random_stat(dict_of_dicts)
-        while random_stat in random_values:
+        while random_stat in random_values or random_stat[1] is None:
             random_stat = get_random_stat(dict_of_dicts)
-        random_values.append("{}: {}".format(random_stat[0], random_stat[1]))
+        random_values.append("{}: {}".format(str(random_stat[0]), str(random_stat[1])))
     print('random values <{}>'.format(random_values))
     return random_values
 
