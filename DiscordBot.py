@@ -115,7 +115,7 @@ async def on_voice_state_update(member, before, after):
                         bnet_user_name, response))
 
 
-async def http_get(uri):
+def http_get(uri):
     response = requests.get(uri)
     if response.ok:
         return response.json()
