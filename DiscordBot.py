@@ -179,7 +179,7 @@ def get_random_dict_values(dict_of_dicts, num_of_values):
 
 
 def get_random_stat(stats_dict):
-    keys = stats_dict.keys()
+    keys = list(stats_dict.keys())
     print('keys={}'.format(keys))
     if len(keys) == 1:
         return keys[0], stats_dict[keys]
