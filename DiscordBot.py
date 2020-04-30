@@ -58,13 +58,17 @@ async def on_member_join(member):
     await member.guild.text_channels[0].send('Hello {}!'.format(member.display_name))
 
 
-def format_login_response(stats):
+def format_login_response(stats, battle_net_tag):
     output = "[Battle.net Tag {}]. \nYour top 5 heroes this season are:\n".format(stats["name"])
     raw_top_heroes = stats["competitiveStats"]["topHeroes"]
     print("topHeroes: {}".format(raw_top_heroes))
     raw_top_hero_keys = get_sorted_hero_keys(raw_top_heroes)
-
-    # Get top 5 heroes.
+    response = http_get("https://ow-api.com/v1/stats/pc/us/{battle_tag}/heroes/{hero}".format(battle_net_tag))
+    if response is not None:
+        games_played = response["competitiveStats"]["games"]["won"]
+        if games_played is not None:
+            print("games played {}".format(games_played))
+        # Get top 5 heroes.
     for raw_top_hero_key in raw_top_hero_keys[:5]:
         output += "\t\t{}: Win percentage: {} | Games won: {} | Time played: {}\n".format(raw_top_hero_key.capitalize(),
                                                                                           raw_top_heroes[
@@ -102,14 +106,21 @@ async def on_voice_state_update(member, before, after):
             await text_channel.send("Welcome back {}.".format(member.name))
             for result in result_set:
                 bnet_user_name = result[MongoConstants.BNET_ID_FIELD]
-                response = requests.get(
-                    'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(
-                        bnet_user_name.replace("#", "-")))
-                if response.ok:
-                    await text_channel.send(format_login_response(response.json()))
+                uri = 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnet_user_name.replace("#", "-"))
+                response = http_get(uri)
+                if response is not None:
+                    await text_channel.send(format_login_response(response.json(), bnet_user_name))
                 else:
                     await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
                         bnet_user_name, response))
+
+
+async def http_get(uri):
+    response = requests.get(uri)
+    if response.ok:
+        return response.json()
+    else:
+        return None
 
 
 def is_stats_channel(before_channel, after_channel):
