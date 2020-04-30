@@ -101,14 +101,15 @@ async def on_voice_state_update(member, before, after):
         if result_set.count() > 0:
             await text_channel.send("Welcome back {}.".format(member.name))
             for result in result_set:
+                bnet_user_name = result[MongoConstants.BNET_ID_FIELD]
                 response = requests.get(
                     'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(
-                        result[MongoConstants.BNET_ID_FIELD].replace("#", "-")))
+                        bnet_user_name.replace("#", "-")))
                 if response.ok:
                     await text_channel.send(format_login_response(response.json()))
                 else:
                     await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
-                        result, response))
+                        bnet_user_name, response))
 
 
 def get_battle_net_ids(discordName, table):
