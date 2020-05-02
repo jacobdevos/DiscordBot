@@ -191,7 +191,7 @@ def get_embedded_stats(stats, stats_uri):
     hero_stats_discord_embed.url = stats_uri
     hero_stats_discord_embed.description = msg_output
 
-    return msg_output
+    return hero_stats_discord_embed
 
 
 def get_formatted_stats(stats, stats_uri):
