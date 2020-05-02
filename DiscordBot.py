@@ -173,7 +173,7 @@ def get_embedded_stats(stats, stats_uri):
         for random_stat in random_stats.keys():
             list_of_str_fmt_stats.append("{}: {}".format(str(random_stat), str(random_stats[random_stat])))
 
-        values = " | ".join(list_of_str_fmt_stats)
+        values = "\n".join(list_of_str_fmt_stats)
         hero_stats_discord_embed.add_field(name=top_hero.capitalize(), value=values)
 
     hero_stats_discord_embed.url = stats_uri
