@@ -136,7 +136,7 @@ def get_random_dict_values(dict_of_dicts, num_of_values):
     random_stats = {}
     for i in range(0, num_of_values):
         key_value = None
-        while key_value is None or key_value[1] is None or key_value in random_stats:
+        while key_value is None or key_value[1] is None or key_value[0] in random_stats.keys():
             key_value = get_random_stat(dict_of_dicts)
         random_stats[key_value[0]] = key_value[1]
 
