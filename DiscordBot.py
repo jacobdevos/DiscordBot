@@ -91,7 +91,7 @@ async def on_voice_state_update(member, before, after):
 
 
 async def post_bnet_stats(bnet_user_name, text_channel):
-    use_embed = False
+    use_embed = True
     uri = 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnet_user_name.replace("#", "-"))
     response = http_get(uri)
 
@@ -168,7 +168,12 @@ def get_embedded_stats(stats, stats_uri):
 
         if random_stats:
             hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
-            values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
+            random_stats = get_random_dict_values(hero_stats_dict, 4)
+            list_of_str_fmt_stats = []
+            for random_stat in random_stats.keys():
+                list_of_str_fmt_stats.append("{}: {}".format(str(random_stat), str(random_stats[random_stat])))
+
+            values = " | ".join(list_of_str_fmt_stats)
             msg_output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
         else:
             games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
@@ -186,6 +191,9 @@ def get_embedded_stats(stats, stats_uri):
                     "timePlayed"])
     hero_stats_discord_embed.url = stats_uri
     hero_stats_discord_embed.description = msg_output
+    player_icon_url = stats["icon"]
+    if player_icon_url is not None:
+        hero_stats_discord_embed.set_thumbnail(url=player_icon_url)
 
     return hero_stats_discord_embed
 
