@@ -172,7 +172,7 @@ def get_embedded_stats(stats, stats_uri):
         random_stats = get_random_dict_values(hero_stats_dict, 4)
         list_of_str_fmt_stats = []
         for random_stat in random_stats.keys():
-            list_of_str_fmt_stats.append("{}:\t{}".format(str(random_stat), str(random_stats[random_stat])))
+            list_of_str_fmt_stats.append("{}:\t\t{}".format(str(random_stat), str(random_stats[random_stat])))
 
         values = "\n".join(list_of_str_fmt_stats)
         hero_stats_discord_embed.add_field(name=top_hero.capitalize(), value=values, inline=False)
