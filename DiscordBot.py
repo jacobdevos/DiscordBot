@@ -10,6 +10,7 @@ import MongoDb
 client = discord.Client()
 storage = MongoDb.get_discord_mongo_table()
 bot_channels = [("JakesBotTest", "General"), ("JTMoney", "Broverwatch")]
+PREVIOUS_STATISTICS_KEYS = {}
 
 
 @client.event
@@ -65,14 +66,22 @@ def get_formatted_stats(stats):
     # get top 5 hero names
     top_hero_names = get_top_heroes_sorted(stats, 5)
 
-    msg_output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(stats["name"],
+    bnet_name = stats["name"]
+    msg_output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(bnet_name,
                                                                                        len(top_hero_names))
 
     for top_hero in top_hero_names:
 
         if random_stats:
             hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
-            values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
+
+            random_user_statistics = get_random_dict_values(hero_stats_dict, 4, PREVIOUS_STATISTICS_KEYS[bnet_name])
+            # add retrieved stats to filter
+            print("previous_stats = {}, random_user_statistics = {}".format(PREVIOUS_STATISTICS_KEYS[bnet_name],
+                                                                            random_user_statistics))
+            PREVIOUS_STATISTICS_KEYS[bnet_name] = random_user_statistics.keys()
+
+            values = format_stats_for_user_output_message(random_user_statistics)
             msg_output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
         else:
             games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
@@ -89,6 +98,14 @@ def get_formatted_stats(stats):
                     top_hero][
                     "timePlayed"])
     return msg_output
+
+
+def format_stats_for_user_output_message(random_user_statistics):
+    formatted_statistics = []
+    for random_stat in random_user_statistics:
+        formatted_statistics.append("{}: {}".format(str(random_stat[0]), str(random_stat[1])))
+    values = " | ".join(formatted_statistics)
+    return values
 
 
 def get_top_heroes_sorted(stats, max_number_of_heroes):
@@ -147,27 +164,24 @@ def is_stats_channel(before_channel, after_channel):
         for entry in bot_channels:
             if after_channel.channel.guild.name == entry[0] and after_channel.channel.name == entry[1]:
                 stats_channel = True
-                break;
+                break
     return stats_channel
 
 
-def get_battle_net_ids(discordName, table):
-    return table.find({MongoConstants.DISCORD_NAME_FIELD: discordName})
+def get_battle_net_ids(discord_name, table):
+    return table.find({MongoConstants.DISCORD_NAME_FIELD: discord_name})
 
 
-def get_random_dict_values(dict_of_dicts, num_of_values):
-    random_values = []
-    random_stat_tuples = []
+def get_random_dict_values(dict_of_dicts, num_of_values, key_filter_list):
+    random_stats = {}
     for i in range(0, num_of_values):
-        key_value = None
-        while key_value is None or key_value[1] is None or key_value in random_stat_tuples:
-            key_value = get_random_stat(dict_of_dicts)
-        random_stat_tuples.append(key_value)
+        stat = None
+        while stat is None or stat[1] is None or stat in key_filter_list or stat in random_stats:
+            key, value = get_random_stat(dict_of_dicts)
 
-    for random_stat in random_stat_tuples:
-        random_values.append("{}: {}".format(str(random_stat[0]), str(random_stat[1])))
+        random_stats[key] = value
 
-    return random_values
+    return random_stats
 
 
 def get_random_stat(stats_dict):
@@ -175,7 +189,7 @@ def get_random_stat(stats_dict):
     key = keys[random.randint(0, len(keys) - 1)]
     value = stats_dict[key]
     if type(value) is not dict:
-        return [key, value]
+        return key, value
     else:
         return get_random_stat(value)
 
