@@ -91,7 +91,7 @@ async def on_voice_state_update(member, before, after):
 
 
 async def post_bnet_stats(bnet_user_name, text_channel):
-    use_embed = True
+    use_embed = False
     uri = 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnet_user_name.replace("#", "-"))
     response = http_get(uri)
 
@@ -133,18 +133,14 @@ def get_battle_net_ids(discordName, table):
 
 
 def get_random_dict_values(dict_of_dicts, num_of_values):
-    random_values = []
-    random_stat_tuples = []
+    random_stats = {}
     for i in range(0, num_of_values):
         key_value = None
         while key_value is None or key_value[1] is None or key_value in random_stat_tuples:
             key_value = get_random_stat(dict_of_dicts)
-        random_stat_tuples.append(key_value)
+        random_stats[key_value[0]] = key_value[1]
 
-    for random_stat in random_stat_tuples:
-        random_values.append("{}: {}".format(str(random_stat[0]), str(random_stat[1])))
-
-    return random_values
+    return random_stats
 
 
 def get_random_stat(stats_dict):
@@ -207,7 +203,12 @@ def get_formatted_stats(stats, stats_uri):
 
         if random_stats:
             hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
-            values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
+            random_stats = get_random_dict_values(hero_stats_dict, 4)
+            list_of_str_fmt_stats = []
+            for random_stat in random_stats.keys():
+                list_of_str_fmt_stats.append("{}: {}".format(str(random_stat), str(random_stats[random_stat])))
+
+            values = " | ".join(list_of_str_fmt_stats)
             msg_output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
         else:
             games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
