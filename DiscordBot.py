@@ -69,7 +69,7 @@ def get_top_heroes_sorted(stats, max_number_of_heroes):
             if int(stats["competitiveStats"]["careerStats"][key]["game"]["gamesPlayed"]) < 10:
                 delete.append(key)
         except KeyError as ke:
-            print("failed to get games played for hero{} with error <{}>".format(key, str(ke)))
+            print("failed to get games played for hero '{}' with error <{}>".format(key, str(ke)))
 
     for key in delete:
         del top_heroes[key]
@@ -158,8 +158,6 @@ def get_random_stat(stats_dict):
 
 
 def get_embedded_stats(stats, stats_uri):
-    random_stats = True
-    top_heroes_stats_raw = stats["competitiveStats"]["topHeroes"]
     # get top 5 hero names
     top_hero_names = get_top_heroes_sorted(stats, 5)
     hero_stats_discord_embed = discord.Embed()
@@ -169,30 +167,15 @@ def get_embedded_stats(stats, stats_uri):
         len(top_hero_names))
 
     for top_hero in top_hero_names:
+        hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
+        random_stats = get_random_dict_values(hero_stats_dict, 4)
+        list_of_str_fmt_stats = []
+        for random_stat in random_stats.keys():
+            list_of_str_fmt_stats.append("{}: {}".format(str(random_stat), str(random_stats[random_stat])))
 
-        if random_stats:
-            hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
-            random_stats = get_random_dict_values(hero_stats_dict, 4)
-            list_of_str_fmt_stats = []
-            for random_stat in random_stats.keys():
-                list_of_str_fmt_stats.append("{}: {}".format(str(random_stat), str(random_stats[random_stat])))
+        values = " | ".join(list_of_str_fmt_stats)
+        hero_stats_discord_embed.add_field(top_hero.capitalize(), values)
 
-            values = " | ".join(list_of_str_fmt_stats)
-            msg_output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
-        else:
-            games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
-            msg_output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
-                top_hero.capitalize(),
-                top_heroes_stats_raw[
-                    top_hero][
-                    "winPercentage"],
-                top_heroes_stats_raw[
-                    top_hero][
-                    "gamesWon"],
-                games_played,
-                top_heroes_stats_raw[
-                    top_hero][
-                    "timePlayed"])
     hero_stats_discord_embed.url = stats_uri
     hero_stats_discord_embed.description = msg_output
     player_icon_url = stats["icon"]
