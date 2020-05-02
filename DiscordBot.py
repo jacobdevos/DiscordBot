@@ -59,39 +59,6 @@ async def on_member_join(member):
     await member.guild.text_channels[0].send('Hello {}!'.format(member.display_name))
 
 
-def get_formatted_stats(stats, stats_uri):
-    random_stats = True
-    top_heroes_stats_raw = stats["competitiveStats"]["topHeroes"]
-    # get top 5 hero names
-    top_hero_names = get_top_heroes_sorted(stats, 5)
-
-    msg_output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(
-        "[{}]({})".format(stats["name"], stats_uri),
-        len(top_hero_names))
-
-    for top_hero in top_hero_names:
-
-        if random_stats:
-            hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
-            values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
-            msg_output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
-        else:
-            games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
-            msg_output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
-                top_hero.capitalize(),
-                top_heroes_stats_raw[
-                    top_hero][
-                    "winPercentage"],
-                top_heroes_stats_raw[
-                    top_hero][
-                    "gamesWon"],
-                games_played,
-                top_heroes_stats_raw[
-                    top_hero][
-                    "timePlayed"])
-    return msg_output
-
-
 def get_top_heroes_sorted(stats, max_number_of_heroes):
     top_heroes = stats["competitiveStats"]["topHeroes"]
     # prune the list so that only heroes which have been played 10 or more times are considered
@@ -124,11 +91,17 @@ async def on_voice_state_update(member, before, after):
 
 
 async def post_bnet_stats(bnet_user_name, text_channel):
+    use_embed = True
     uri = 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnet_user_name.replace("#", "-"))
     response = http_get(uri)
+
     if response is not None:
-        stats = get_formatted_stats(response, uri)
-        await text_channel.send(stats)
+        if use_embed:
+            stats_embed = get_embedded_stats(response, uri)
+            await text_channel.send(embed=stats_embed)
+        else:
+            stats = get_formatted_stats(response, uri)
+            await text_channel.send(stats)
     else:
         await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
             bnet_user_name, response))
@@ -182,6 +155,72 @@ def get_random_stat(stats_dict):
         return [key, value]
     else:
         return get_random_stat(value)
+
+
+def get_embedded_stats(stats, stats_uri):
+    random_stats = True
+    top_heroes_stats_raw = stats["competitiveStats"]["topHeroes"]
+    # get top 5 hero names
+    top_hero_names = get_top_heroes_sorted(stats, 5)
+
+    msg_output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(
+        "[{}]({})".format(stats["name"], stats_uri),
+        len(top_hero_names))
+
+    for top_hero in top_hero_names:
+
+        if random_stats:
+            hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
+            values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
+            msg_output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
+        else:
+            games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
+            msg_output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
+                top_hero.capitalize(),
+                top_heroes_stats_raw[
+                    top_hero][
+                    "winPercentage"],
+                top_heroes_stats_raw[
+                    top_hero][
+                    "gamesWon"],
+                games_played,
+                top_heroes_stats_raw[
+                    top_hero][
+                    "timePlayed"])
+    return msg_output
+
+
+def get_formatted_stats(stats, stats_uri):
+    random_stats = True
+    top_heroes_stats_raw = stats["competitiveStats"]["topHeroes"]
+    # get top 5 hero names
+    top_hero_names = get_top_heroes_sorted(stats, 5)
+
+    msg_output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(
+        "[{}]({})".format(stats["name"], stats_uri),
+        len(top_hero_names))
+
+    for top_hero in top_hero_names:
+
+        if random_stats:
+            hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
+            values = " | ".join(get_random_dict_values(hero_stats_dict, 4))
+            msg_output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
+        else:
+            games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
+            msg_output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
+                top_hero.capitalize(),
+                top_heroes_stats_raw[
+                    top_hero][
+                    "winPercentage"],
+                top_heroes_stats_raw[
+                    top_hero][
+                    "gamesWon"],
+                games_played,
+                top_heroes_stats_raw[
+                    top_hero][
+                    "timePlayed"])
+    return msg_output
 
 
 client.run(get_token())
