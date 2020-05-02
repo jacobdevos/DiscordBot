@@ -74,8 +74,8 @@ def get_formatted_stats(stats):
 
         if random_stats:
             hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
-
-            random_user_statistics = get_random_dict_values(hero_stats_dict, 4, PREVIOUS_STATISTICS_KEYS[bnet_name])
+            previous_keys = get_previous_keys_for_user(bnet_name)
+            random_user_statistics = get_random_dict_values(hero_stats_dict, 4, previous_keys)
             # add retrieved stats to filter
             print("previous_stats = {}, random_user_statistics = {}".format(PREVIOUS_STATISTICS_KEYS[bnet_name],
                                                                             random_user_statistics))
@@ -98,6 +98,14 @@ def get_formatted_stats(stats):
                     top_hero][
                     "timePlayed"])
     return msg_output
+
+
+def get_previous_keys_for_user(bnet_name):
+    if bnet_name in PREVIOUS_STATISTICS_KEYS:
+        previous_keys = PREVIOUS_STATISTICS_KEYS[bnet_name]
+    else:
+        previous_keys = []
+    return previous_keys
 
 
 def format_stats_for_user_output_message(random_user_statistics):
