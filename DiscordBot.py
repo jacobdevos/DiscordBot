@@ -91,7 +91,7 @@ async def on_voice_state_update(member, before, after):
 
 
 async def post_bnet_stats(bnet_user_name, text_channel):
-    use_embed = False
+    use_embed = True
     uri = 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnet_user_name.replace("#", "-"))
     response = http_get(uri)
 
@@ -162,9 +162,10 @@ def get_embedded_stats(stats, stats_uri):
     top_heroes_stats_raw = stats["competitiveStats"]["topHeroes"]
     # get top 5 hero names
     top_hero_names = get_top_heroes_sorted(stats, 5)
+    hero_stats_discord_embed = discord.Embed()
+    hero_stats_discord_embed.title = "[Battle.net Tag {}]".format(stats["name"])
 
-    msg_output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(
-        "[{}]({})".format(stats["name"], stats_uri),
+    msg_output = "\nYour top {} heroes this season are:\n".format(
         len(top_hero_names))
 
     for top_hero in top_hero_names:
@@ -187,6 +188,9 @@ def get_embedded_stats(stats, stats_uri):
                 top_heroes_stats_raw[
                     top_hero][
                     "timePlayed"])
+    hero_stats_discord_embed.url = stats_uri
+    hero_stats_discord_embed.description = msg_output
+
     return msg_output
 
 
@@ -196,9 +200,8 @@ def get_formatted_stats(stats, stats_uri):
     # get top 5 hero names
     top_hero_names = get_top_heroes_sorted(stats, 5)
 
-    msg_output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(
-        "[{}]({})".format(stats["name"], stats_uri),
-        len(top_hero_names))
+    msg_output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(stats["name"],
+                                                                                       len(top_hero_names))
 
     for top_hero in top_hero_names:
 
