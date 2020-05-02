@@ -182,6 +182,7 @@ def get_embedded_stats(stats, stats_uri):
     player_icon_url = stats["icon"]
     if player_icon_url is not None:
         hero_stats_discord_embed.set_thumbnail(url=player_icon_url)
+    hero_stats_discord_embed.color = 0x000080
 
     return hero_stats_discord_embed
 
