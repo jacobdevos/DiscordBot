@@ -69,7 +69,7 @@ def get_top_heroes_sorted(stats, max_number_of_heroes):
             if int(stats["competitiveStats"]["careerStats"][key]["game"]["gamesPlayed"]) < 10:
                 delete.append(key)
         except KeyError as ke:
-            print("failed to get games played for hero{} with error <{}>".format(top_heroes.keys(), str(ke)))
+            print("failed to get games played for hero{} with error <{}>".format(key, str(ke)))
 
     for key in delete:
         del top_heroes[key]
