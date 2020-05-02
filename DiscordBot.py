@@ -94,6 +94,7 @@ def get_formatted_stats(stats):
 def get_top_heroes_sorted(stats, max_number_of_heroes):
     top_heroes = stats["competitiveStats"]["topHeroes"]
     # prune the list so that only heroes which have been played 10 or more times are considered
+    print("top heroes = {}".format(top_heroes))
     delete = [key for key in top_heroes if
               int(stats["competitiveStats"]["careerStats"][key]["game"]["gamesPlayed"]) < 10]
     for key in delete:
