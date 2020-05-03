@@ -170,9 +170,8 @@ def get_embedded_stats(stats, stats_uri):
 
     max_sr_role, max_sr_value = get_max_sr(stats)
 
-    msg_output = "\nYour best role is {}, your top {} heroes this season are:\n".format(
-        "{} ({}<sup>sr</sup>)".format(max_sr_role, max_sr_value),
-        len(top_hero_names))
+    msg_output = "\nYour best role is '{}' with {} SR and your top {} heroes this season are:\n".format(
+        max_sr_role, max_sr_value, len(top_hero_names))
 
     for top_hero in top_hero_names:
         hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
