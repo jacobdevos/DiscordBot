@@ -173,7 +173,7 @@ def get_embedded_stats(stats, stats_uri):
         list_of_str_fmt_stats = []
         for random_stat in random_stats.keys():
             list_of_str_fmt_stats.append(
-                "{}:\t\t{}".format(un_camel_case(str(random_stat)), str(random_stats[random_stat])))
+                "{}: {}".format(un_camel_case(str(random_stat)), str(random_stats[random_stat])))
 
         values = "\n".join(list_of_str_fmt_stats)
         hero_stats_discord_embed.add_field(name=top_hero.capitalize(), value=values, inline=False)
@@ -226,16 +226,20 @@ def get_formatted_stats(stats, stats_uri):
     return msg_output
 
 
-def un_camel_case(camel_cased_string):
+def un_camel_case(camel_cased_string, space_before_numbers=True):
     output_string = ""
     for i in range(0, len(camel_cased_string)):
         if i == 0:
             output_string += camel_cased_string[0].upper()
-        elif camel_cased_string[i].isupper():
+        elif camel_cased_string[i].isupper() or (
+                space_before_numbers is True and camel_cased_string[i].isnumeric() and not camel_cased_string[
+            i - 1].isnumeric()):
             output_string += " {}".format(camel_cased_string[i].lower())
         else:
             output_string += camel_cased_string[i]
     return output_string
 
 
-client.run(get_token())
+print("{}".format(un_camel_case("thisIsATest10")))
+
+# client.run(get_token())
