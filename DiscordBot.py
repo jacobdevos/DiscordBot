@@ -240,6 +240,4 @@ def un_camel_case(camel_cased_string, space_before_numbers=True):
     return output_string
 
 
-print("{}".format(un_camel_case("thisIsATest10")))
-
-# client.run(get_token())
+client.run(get_token())
