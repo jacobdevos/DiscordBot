@@ -11,7 +11,7 @@ client = discord.Client()
 storage = MongoDb.get_discord_mongo_table()
 bot_channels = [("JakesBotTest", "General"), ("JTMoney", "Broverwatch")]
 DEFAULT_COLOUR = 0x003366
-hero_colours = {"ana": 0x718AB3, "bastion": 0x7C8F7B, "brigitte": 0xBE736E, "dVa": 0xED93C7, "doomfist": 815049,
+HERO_COLOURS = {"ana": 0x718AB3, "bastion": 0x7C8F7B, "brigitte": 0xBE736E, "dVa": 0xED93C7, "doomfist": 815049,
                 "genji": 0x97EF43, "hanzo": 0xb9b48a, "junkrat": 0xECBD53, "lucio": 0x85C952, "mccree": 0xAE595C,
                 "mei": 0x6FACED, "mercy": 0xEBE8BB, "moira": 0x976BE2, "orisa": 0x468C43, "pharah": 0x3E7DCA,
                 "reaper": 0x7D3E51, "reinhardt": 0x929DA3, "roadhog": 0xB68C52, "soldier76": 0x697794,
@@ -203,8 +203,10 @@ def get_embedded_stats(stats, stats_uri):
 
 def get_hero_colour(name):
     message_colour = DEFAULT_COLOUR
-    if name in hero_colours.keys():
-        message_colour = hero_colours[name]
+    if name in HERO_COLOURS.keys():
+        message_colour = HERO_COLOURS[name]
+    else:
+        print("Hero colour not found for hero {}, default {} used".format(name, message_colour))
     return message_colour
 
 
