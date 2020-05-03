@@ -10,6 +10,12 @@ import MongoDb
 client = discord.Client()
 storage = MongoDb.get_discord_mongo_table()
 bot_channels = [("JakesBotTest", "General"), ("JTMoney", "Broverwatch")]
+hero_colours = {"ana": 0x718AB3, "bastion": 0x7C8F7B, "brigitte": 0xBE736E, "dVa": 0xED93C7, "doomfist": 815049,
+                "genji": 0x97EF43, "hanzo": 0xb9b48a, "junkrat": 0xECBD53, "lucio": 0x85C952, "mccree": 0xAE595C,
+                "mei": 0x6FACED, "mercy": 0xEBE8BB, "moira": 0x803C51, "orisa": 0x468C43, "pharah": 0x3E7DCA,
+                "reaper": 0x7D3E51, "reinhardt": 0x929DA3, "roadhog": 0xB68C52, "soldier76": 0x697794,
+                "sombra": 0x7359BA, "symmetra": 0x8EBCCC, "torbjorn": 0xC0726E, "tracer": 0xD79342,
+                "widowmaker": 0x9E6AA8, "winston": 0xA2A6BF, "zarya": 0xE77EB6, "zenyatta": 0xEDE582}
 
 
 @client.event
@@ -157,7 +163,7 @@ def get_random_stat(stats_dict):
 def get_embedded_stats(stats, stats_uri):
     # get top 5 hero names
     top_hero_names = get_top_heroes_sorted(stats, 5)
-    hero_stats_discord_embed = discord.Embed(color=0x003366)
+    hero_stats_discord_embed = discord.Embed(color=top_hero_names[0])
     hero_stats_discord_embed.title = "[BattleTag {}]".format(stats["name"])
 
     msg_output = "\nYour top {} heroes this season are:\n".format(
