@@ -205,7 +205,7 @@ def get_embedded_stats(stats, stats_uri):
 
 
 def get_max_sr(stats):
-    ratings = stats["ratings"]
+    ratings = stats["ratings"][0]
     max_sr = 0
     role = "unknown"
     print("ratings={}".format(ratings))
