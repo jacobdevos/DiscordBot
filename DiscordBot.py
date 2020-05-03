@@ -168,7 +168,7 @@ def get_embedded_stats(stats, stats_uri):
     hero_stats_discord_embed = discord.Embed(color=get_hero_colour(top_hero_names[0]))
     hero_stats_discord_embed.title = "[BattleTag {}]".format(stats["name"])
 
-    max_sr_role, max_sr_value = get_max_sr(stats["ratings"])
+    max_sr_role, max_sr_value = get_max_sr(stats)
 
     msg_output = "\nYour best role is {}, your top {} heroes this season are:\n".format(
         "{} ({}SR)".format(max_sr_role, max_sr_value),
@@ -204,10 +204,12 @@ def get_embedded_stats(stats, stats_uri):
     return hero_stats_discord_embed
 
 
-def get_max_sr(ratings):
+def get_max_sr(stats):
+    ratings = stats["ratings"]
     max_sr = 0
     role = "unknown"
-    for key in ratings[0].keys():
+    print("ratings={}".format(ratings))
+    for key in ratings.keys():
         if "level" in ratings[key]:
             level = ratings["level"]
             if max_sr <= level:
