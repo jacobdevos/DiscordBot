@@ -203,7 +203,8 @@ def get_formatted_stats(stats, stats_uri):
             random_stats = get_random_dict_values(hero_stats_dict, 4)
             list_of_str_fmt_stats = []
             for random_stat in random_stats.keys():
-                list_of_str_fmt_stats.append("{}: {}".format(str(random_stat), str(random_stats[random_stat])))
+                list_of_str_fmt_stats.append(
+                    "{}: {}".format(un_camel_case(str(random_stat)), str(random_stats[random_stat])))
 
             values = " | ".join(list_of_str_fmt_stats)
             msg_output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
@@ -222,6 +223,18 @@ def get_formatted_stats(stats, stats_uri):
                     top_hero][
                     "timePlayed"])
     return msg_output
+
+
+def un_camel_case(camel_cased_string):
+    output_string = ""
+    for i in range(0, len(camel_cased_string)):
+        if i == 0:
+            output_string += camel_cased_string[0].upper()
+        elif camel_cased_string[i].isupper():
+            output_string += " {}".format(camel_cased_string[i].lower())
+        else:
+            output_string += camel_cased_string[i]
+    return output_string
 
 
 client.run(get_token())
