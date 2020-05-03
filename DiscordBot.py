@@ -163,7 +163,7 @@ def get_random_stat(stats_dict):
 def get_embedded_stats(stats, stats_uri):
     # get top 5 hero names
     top_hero_names = get_top_heroes_sorted(stats, 5)
-    hero_stats_discord_embed = discord.Embed(color=top_hero_names[0])
+    hero_stats_discord_embed = discord.Embed(color=hero_colours[top_hero_names[0]])
     hero_stats_discord_embed.title = "[BattleTag {}]".format(stats["name"])
 
     msg_output = "\nYour top {} heroes this season are:\n".format(
