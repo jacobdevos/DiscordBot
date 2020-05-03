@@ -168,27 +168,30 @@ def get_embedded_stats(stats, stats_uri):
     hero_stats_discord_embed = discord.Embed(color=get_hero_colour(top_hero_names[0]))
     hero_stats_discord_embed.title = "[BattleTag {}]".format(stats["name"])
 
-    msg_output = "\nYour top {} heroes this season are:\n".format(
+    max_sr_role, max_sr_value = get_max_sr(stats["ratings"])
+
+    msg_output = "\nYour best role is {}, your top {} heroes this season are:\n".format(
+        "{} ({}SR)".format(max_sr_role, max_sr_value),
         len(top_hero_names))
 
     for top_hero in top_hero_names:
         hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
-        win_percentage = stats["competitiveStats"]["careerStats"][top_hero]["game"]["winPercentage"]
-        games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
-        random_stats = get_random_dict_values(hero_stats_dict, 4, filter_keys=["winPercentage", "gamesPlayed"])
+    win_percentage = stats["competitiveStats"]["careerStats"][top_hero]["game"]["winPercentage"]
+    games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
+    random_stats = get_random_dict_values(hero_stats_dict, 4, filter_keys=["winPercentage", "gamesPlayed"])
 
-        list_of_str_fmt_stats = []
-        for random_stat in random_stats.keys():
-            list_of_str_fmt_stats.append(
-                "{}: {}".format(un_camel_case(str(random_stat)), str(random_stats[random_stat])))
+    list_of_str_fmt_stats = []
+    for random_stat in random_stats.keys():
+        list_of_str_fmt_stats.append(
+            "{}: {}".format(un_camel_case(str(random_stat)), str(random_stats[random_stat])))
 
-        values = "\n".join(list_of_str_fmt_stats)
-        hero_stats_discord_embed.add_field(
-            name="{hero_name} ({win_percentage} of {games_played})".format(hero_name=top_hero.capitalize(),
-                                                                           win_percentage=win_percentage,
-                                                                           games_played=games_played),
-            value=values,
-            inline=False)
+    values = "\n".join(list_of_str_fmt_stats)
+    hero_stats_discord_embed.add_field(
+        name="{hero_name} ({win_percentage} of {games_played})".format(hero_name=top_hero.capitalize(),
+                                                                       win_percentage=win_percentage,
+                                                                       games_played=games_played),
+        value=values,
+        inline=False)
 
     hero_stats_discord_embed.url = stats_uri
     hero_stats_discord_embed.description = msg_output
@@ -199,6 +202,19 @@ def get_embedded_stats(stats, stats_uri):
         hero_stats_discord_embed.set_thumbnail(url=player_icon_url)
 
     return hero_stats_discord_embed
+
+
+def get_max_sr(ratings):
+    max_sr = 0
+    role = "unknown"
+    for key in ratings.keys():
+        if "level" in ratings[key]:
+            level = ratings["level"]
+            if max_sr <= level:
+                role = ratings["role"]
+                max_sr = level
+
+    return role, max_sr
 
 
 def get_hero_colour(name):
