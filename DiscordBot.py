@@ -210,8 +210,8 @@ def get_max_sr(stats):
     role = "unknown"
     print("ratings={}".format(ratings))
     for key in ratings:
-        if "level" in ratings[key]:
-            level = ratings["level"]
+        if "level" in ratings[key].keys():
+            level = ratings[key]["level"]
             if max_sr <= level:
                 role = ratings["role"]
                 max_sr = level
