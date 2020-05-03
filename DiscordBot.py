@@ -1,8 +1,10 @@
+import datetime
 import os
 import random
 
 import discord
 import requests
+from pytz import timezone
 
 import MongoConstants
 import MongoDb
@@ -96,7 +98,6 @@ async def on_voice_state_update(member, before, after):
 
 
 async def post_bnet_stats(bnet_user_name, text_channel):
-    use_embed = True
     uri = 'https://ow-api.com/v1/stats/pc/us/{}/complete'.format(bnet_user_name.replace("#", "-"))
     response = http_get(uri)
 
@@ -125,12 +126,12 @@ def is_stats_channel(before_channel, after_channel):
         for entry in bot_channels:
             if after_channel.channel.guild.name == entry[0] and after_channel.channel.name == entry[1]:
                 stats_channel = True
-                break;
+                break
     return stats_channel
 
 
-def get_battle_net_ids(discordName, table):
-    return table.find({MongoConstants.DISCORD_NAME_FIELD: discordName})
+def get_battle_net_ids(discord_name, table):
+    return table.find({MongoConstants.DISCORD_NAME_FIELD: discord_name})
 
 
 def get_random_dict_values(dict_of_dicts, num_of_values, filter_keys):
@@ -158,8 +159,8 @@ def get_random_stat(stats_dict):
 def get_embedded_stats(stats, stats_uri):
     # get top 5 hero names
     top_hero_names = get_top_heroes_sorted(stats, 5)
-    hero_stats_discord_embed = discord.Embed()
-    hero_stats_discord_embed.title = "[Battle.net Tag {}]".format(stats["name"])
+    hero_stats_discord_embed = discord.Embed(color=0x003366)
+    hero_stats_discord_embed.title = "[BattleTag {}]".format(stats["name"])
 
     msg_output = "\nYour top {} heroes this season are:\n".format(
         len(top_hero_names))
@@ -169,7 +170,7 @@ def get_embedded_stats(stats, stats_uri):
         win_percentage = stats["competitiveStats"]["careerStats"][top_hero]["game"]["winPercentage"]
         games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
         random_stats = get_random_dict_values(hero_stats_dict, 4, filter_keys=["winPercentage", "gamesPlayed"])
-        
+
         list_of_str_fmt_stats = []
         for random_stat in random_stats.keys():
             list_of_str_fmt_stats.append(
@@ -185,10 +186,10 @@ def get_embedded_stats(stats, stats_uri):
 
     hero_stats_discord_embed.url = stats_uri
     hero_stats_discord_embed.description = msg_output
+    hero_stats_discord_embed.timestamp = datetime.now(timezone('Canada/Eastern'))
     player_icon_url = stats["icon"]
     if player_icon_url is not None:
         hero_stats_discord_embed.set_thumbnail(url=player_icon_url)
-    hero_stats_discord_embed.color = 0x003366
 
     return hero_stats_discord_embed
 
