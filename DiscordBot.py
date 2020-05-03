@@ -13,7 +13,7 @@ bot_channels = [("JakesBotTest", "General"), ("JTMoney", "Broverwatch")]
 DEFAULT_COLOUR = 0x003366
 hero_colours = {"ana": 0x718AB3, "bastion": 0x7C8F7B, "brigitte": 0xBE736E, "dVa": 0xED93C7, "doomfist": 815049,
                 "genji": 0x97EF43, "hanzo": 0xb9b48a, "junkrat": 0xECBD53, "lucio": 0x85C952, "mccree": 0xAE595C,
-                "mei": 0x6FACED, "mercy": 0xEBE8BB, "moira": 0x803C51, "orisa": 0x468C43, "pharah": 0x3E7DCA,
+                "mei": 0x6FACED, "mercy": 0xEBE8BB, "moira": 0x976BE2, "orisa": 0x468C43, "pharah": 0x3E7DCA,
                 "reaper": 0x7D3E51, "reinhardt": 0x929DA3, "roadhog": 0xB68C52, "soldier76": 0x697794,
                 "sombra": 0x7359BA, "symmetra": 0x8EBCCC, "torbjorn": 0xC0726E, "tracer": 0xD79342,
                 "widowmaker": 0x9E6AA8, "winston": 0xA2A6BF, "zarya": 0xE77EB6, "zenyatta": 0xEDE582}
