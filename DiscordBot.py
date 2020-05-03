@@ -176,22 +176,22 @@ def get_embedded_stats(stats, stats_uri):
 
     for top_hero in top_hero_names:
         hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
-    win_percentage = stats["competitiveStats"]["careerStats"][top_hero]["game"]["winPercentage"]
-    games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
-    random_stats = get_random_dict_values(hero_stats_dict, 4, filter_keys=["winPercentage", "gamesPlayed"])
+        win_percentage = stats["competitiveStats"]["careerStats"][top_hero]["game"]["winPercentage"]
+        games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
+        random_stats = get_random_dict_values(hero_stats_dict, 4, filter_keys=["winPercentage", "gamesPlayed"])
 
-    list_of_str_fmt_stats = []
-    for random_stat in random_stats.keys():
-        list_of_str_fmt_stats.append(
-            "{}: {}".format(un_camel_case(str(random_stat)), str(random_stats[random_stat])))
+        list_of_str_fmt_stats = []
+        for random_stat in random_stats.keys():
+            list_of_str_fmt_stats.append(
+                "{}: {}".format(un_camel_case(str(random_stat)), str(random_stats[random_stat])))
 
-    values = "\n".join(list_of_str_fmt_stats)
-    hero_stats_discord_embed.add_field(
-        name="{hero_name} ({win_percentage} of {games_played})".format(hero_name=top_hero.capitalize(),
-                                                                       win_percentage=win_percentage,
-                                                                       games_played=games_played),
-        value=values,
-        inline=False)
+        values = "\n".join(list_of_str_fmt_stats)
+        hero_stats_discord_embed.add_field(
+            name="{hero_name} ({win_percentage} of {games_played})".format(hero_name=top_hero.capitalize(),
+                                                                           win_percentage=win_percentage,
+                                                                           games_played=games_played),
+            value=values,
+            inline=False)
 
     hero_stats_discord_embed.url = stats_uri
     hero_stats_discord_embed.description = msg_output
