@@ -101,12 +101,8 @@ async def post_bnet_stats(bnet_user_name, text_channel):
     response = http_get(uri)
 
     if response is not None:
-        if use_embed:
-            stats_embed = get_embedded_stats(response, uri)
-            await text_channel.send(embed=stats_embed)
-        else:
-            stats = get_formatted_stats(response, uri)
-            await text_channel.send(stats)
+        stats_embed = get_embedded_stats(response, uri)
+        await text_channel.send(embed=stats_embed)
     else:
         await text_channel.send("Couldn't get stats for user Battle.net user '{}'. Response {}".format(
             bnet_user_name, response))
@@ -137,11 +133,12 @@ def get_battle_net_ids(discordName, table):
     return table.find({MongoConstants.DISCORD_NAME_FIELD: discordName})
 
 
-def get_random_dict_values(dict_of_dicts, num_of_values):
+def get_random_dict_values(dict_of_dicts, num_of_values, filter_keys):
     random_stats = {}
     for i in range(0, num_of_values):
         key_value = None
-        while key_value is None or key_value[1] is None or key_value[0] in random_stats.keys():
+        while key_value is None or key_value[1] is None or key_value[0] in filter_keys or key_value[
+            0] in random_stats.keys():
             key_value = get_random_stat(dict_of_dicts)
         random_stats[key_value[0]] = key_value[1]
 
@@ -169,61 +166,26 @@ def get_embedded_stats(stats, stats_uri):
 
     for top_hero in top_hero_names:
         hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
-        random_stats = get_random_dict_values(hero_stats_dict, 4)
+        win_percentage = stats["competitiveStats"]["careerStats"][top_hero]["game"]["winPercentage"]
+        random_stats = get_random_dict_values(hero_stats_dict, 4, filter_keys=["winPercentage"])
         list_of_str_fmt_stats = []
         for random_stat in random_stats.keys():
             list_of_str_fmt_stats.append(
                 "{}: {}".format(un_camel_case(str(random_stat)), str(random_stats[random_stat])))
 
         values = "\n".join(list_of_str_fmt_stats)
-        hero_stats_discord_embed.add_field(name=top_hero.capitalize(), value=values, inline=False)
+        hero_stats_discord_embed.add_field(name="{} (Win %: {})".format(top_hero.capitalize(), win_percentage),
+                                           value=values,
+                                           inline=False)
 
     hero_stats_discord_embed.url = stats_uri
     hero_stats_discord_embed.description = msg_output
     player_icon_url = stats["icon"]
     if player_icon_url is not None:
         hero_stats_discord_embed.set_thumbnail(url=player_icon_url)
-    hero_stats_discord_embed.color = 0x000080
+    hero_stats_discord_embed.color = 0x003366
 
     return hero_stats_discord_embed
-
-
-def get_formatted_stats(stats, stats_uri):
-    random_stats = True
-    top_heroes_stats_raw = stats["competitiveStats"]["topHeroes"]
-    # get top 5 hero names
-    top_hero_names = get_top_heroes_sorted(stats, 5)
-
-    msg_output = "[Battle.net Tag {}]. \nYour top {} heroes this season are:\n".format(stats["name"],
-                                                                                       len(top_hero_names))
-
-    for top_hero in top_hero_names:
-
-        if random_stats:
-            hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
-            random_stats = get_random_dict_values(hero_stats_dict, 4)
-            list_of_str_fmt_stats = []
-            for random_stat in random_stats.keys():
-                list_of_str_fmt_stats.append(
-                    "{}: {}".format(un_camel_case(str(random_stat)), str(random_stats[random_stat])))
-
-            values = " | ".join(list_of_str_fmt_stats)
-            msg_output += "\t\t{}: {}\n".format(top_hero.capitalize(), values)
-        else:
-            games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
-            msg_output += "\t\t{}: Win percentage: {} | Games won: {} |  Games played: {} | Time played: {}\n".format(
-                top_hero.capitalize(),
-                top_heroes_stats_raw[
-                    top_hero][
-                    "winPercentage"],
-                top_heroes_stats_raw[
-                    top_hero][
-                    "gamesWon"],
-                games_played,
-                top_heroes_stats_raw[
-                    top_hero][
-                    "timePlayed"])
-    return msg_output
 
 
 def un_camel_case(camel_cased_string, space_before_numbers=True):
