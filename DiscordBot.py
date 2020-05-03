@@ -3,6 +3,7 @@ import os
 import random
 
 import discord
+import pytz
 import requests
 
 import MongoConstants
@@ -185,7 +186,7 @@ def get_embedded_stats(stats, stats_uri):
 
     hero_stats_discord_embed.url = stats_uri
     hero_stats_discord_embed.description = msg_output
-    hero_stats_discord_embed.timestamp = datetime.datetime.now()
+    hero_stats_discord_embed.timestamp = datetime.datetime.now(pytz.timezone("Canada/Eastern"))
     player_icon_url = stats["icon"]
     if player_icon_url is not None:
         hero_stats_discord_embed.set_thumbnail(url=player_icon_url)
