@@ -174,7 +174,7 @@ def get_embedded_stats(stats, stats_uri):
                 "{}: {}".format(un_camel_case(str(random_stat)), str(random_stats[random_stat])))
 
         values = "\n".join(list_of_str_fmt_stats)
-        hero_stats_discord_embed.add_field(name="{} ({} Win percentage)".format(top_hero.capitalize(), win_percentage),
+        hero_stats_discord_embed.add_field(name="{} ({})".format(top_hero.capitalize(), win_percentage),
                                            value=values,
                                            inline=False)
 
