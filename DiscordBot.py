@@ -168,7 +168,7 @@ def get_embedded_stats(stats, stats_uri):
         hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
         win_percentage = stats["competitiveStats"]["careerStats"][top_hero]["game"]["winPercentage"]
         games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
-        random_stats = get_random_dict_values(hero_stats_dict, 4, filter_keys=["winPercentage"])
+        random_stats = get_random_dict_values(hero_stats_dict, 4, filter_keys=["winPercentage", "gamesPlayed"])
         list_of_str_fmt_stats = []
         for random_stat in random_stats.keys():
             list_of_str_fmt_stats.append(
