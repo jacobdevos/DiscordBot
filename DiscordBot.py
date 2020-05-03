@@ -207,7 +207,7 @@ def get_embedded_stats(stats, stats_uri):
 def get_max_sr(ratings):
     max_sr = 0
     role = "unknown"
-    for key in ratings.keys():
+    for key in ratings[0].keys():
         if "level" in ratings[key]:
             level = ratings["level"]
             if max_sr <= level:
