@@ -240,4 +240,8 @@ def un_camel_case(camel_cased_string, space_before_numbers=True):
     return output_string
 
 
-client.run(get_token())
+while True:
+    try:
+        client.run(get_token())
+    except Exception as e:
+        print("main program crashed: <{}>".format(e))
