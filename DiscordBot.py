@@ -242,7 +242,7 @@ def un_camel_case(camel_cased_string, space_before_numbers=True):
 
 while True:
     try:
-        client = discord.Client()
         client.run(get_token())
     except Exception as e:
         print("main program crashed: <{}>".format(e))
+    client = discord.Client()
