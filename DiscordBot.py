@@ -240,4 +240,12 @@ def un_camel_case(camel_cased_string, space_before_numbers=True):
     return output_string
 
 
-client.run(get_token())
+# client.run(get_token())
+
+while True:
+    try:
+        client.run(get_token())
+    except Exception as e:
+        print("client run failed <{}>".format(e))
+    # establish new connection
+    client = discord.Client()
