@@ -240,9 +240,4 @@ def un_camel_case(camel_cased_string, space_before_numbers=True):
     return output_string
 
 
-while True:
-    try:
-        client.run(get_token())
-    except Exception as e:
-        print("main program crashed: <{}>".format(e))
-    client = discord.Client()
+client.run(get_token())
