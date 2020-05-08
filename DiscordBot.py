@@ -70,17 +70,24 @@ def get_top_heroes_sorted(stats, max_number_of_heroes):
     top_heroes = stats["competitiveStats"]["topHeroes"]
     # prune the list so that only heroes which have been played 10 or more times are considered
     print("top heroes: ")
-    delete = []
+    less_than_ten_games = []
+    zero_games = []
     for key in top_heroes:
         try:
-            if int(stats["competitiveStats"]["careerStats"][key]["game"]["gamesPlayed"]) < 10:
-                delete.append(key)
+            games_played = int(stats["competitiveStats"]["careerStats"][key]["game"]["gamesPlayed"])
+            if games_played < 10:
+                less_than_ten_games.append(key)
+                if games_played == 0:
+                    zero_games.append(key)
         except KeyError as ke:
             print("failed to get games played for hero '{}' with error <{}>".format(key, str(ke)))
-            delete.append(key)
+            less_than_ten_games.append(key)
 
-    if len(delete) < len(top_heroes):
-        for key in delete:
+    if len(less_than_ten_games) < len(top_heroes):
+        for key in less_than_ten_games:
+            del top_heroes[key]
+    else:
+        for key in zero_games:
             del top_heroes[key]
 
     # Sort list by highest win percentage
