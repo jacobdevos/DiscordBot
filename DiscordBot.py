@@ -69,7 +69,7 @@ async def on_member_join(member):
 def get_top_heroes_sorted(stats, max_number_of_heroes):
     top_heroes = stats["competitiveStats"]["topHeroes"]
     # prune the list so that only heroes which have been played 10 or more times are considered
-
+    print("top heroes: ")
     delete = []
     for key in top_heroes:
         try:
@@ -79,8 +79,9 @@ def get_top_heroes_sorted(stats, max_number_of_heroes):
             print("failed to get games played for hero '{}' with error <{}>".format(key, str(ke)))
             delete.append(key)
 
-    for key in delete:
-        del top_heroes[key]
+    if len(delete) < len(top_heroes):
+        for key in delete:
+            del top_heroes[key]
 
     # Sort list by highest win percentage
     hero_keys = top_heroes.keys()
