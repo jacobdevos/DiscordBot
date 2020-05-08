@@ -192,8 +192,8 @@ def get_embedded_stats(stats, stats_uri):
 
     for top_hero in top_hero_names:
         hero_stats_dict = stats["competitiveStats"]["careerStats"][top_hero]
-        win_percentage = stats["competitiveStats"]["careerStats"][top_hero]["game"]["winPercentage"]
-        games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
+        win_percentage = get_win_percentage(stats, top_hero)
+        games_played = get_games_played(stats, top_hero)
         random_stats = get_random_dict_values(hero_stats_dict, 4, filter_keys=["winPercentage", "gamesPlayed"])
 
         list_of_str_fmt_stats = []
@@ -218,6 +218,24 @@ def get_embedded_stats(stats, stats_uri):
         hero_stats_discord_embed.set_thumbnail(url=player_icon_url)
 
     return hero_stats_discord_embed
+
+
+def get_games_played(stats, top_hero):
+    games_played = 0
+    try:
+        games_played = stats["competitiveStats"]["careerStats"][top_hero]["game"]["gamesPlayed"]
+    except KeyError as ke:
+        print("games played not found: <{}>".format(ke))
+    return games_played
+
+
+def get_win_percentage(stats, top_hero):
+    win_percentage = "NA"
+    try:
+        win_percentage = stats["competitiveStats"]["careerStats"][top_hero]["game"]["winPercentage"]
+    except KeyError as ke:
+        print("win percentage not found: <{}>".format(ke))
+    return win_percentage
 
 
 def get_max_sr(stats):
