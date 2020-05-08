@@ -165,7 +165,10 @@ def get_embedded_stats(stats, stats_uri):
     # get top 5 hero names
     top_hero_names = get_top_heroes_sorted(stats, 5)
 
-    hero_stats_discord_embed = discord.Embed(color=get_hero_colour(top_hero_names[0]))
+    top_hero = top_hero_names[0]
+    if len(top_hero) > 0:
+        hero_stats_discord_embed = discord.Embed(color=get_hero_colour(top_hero))
+        
     hero_stats_discord_embed.title = "[BattleTag {}]".format(stats["name"])
 
     max_sr_role, max_sr_value = get_max_sr(stats)
