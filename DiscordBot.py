@@ -166,7 +166,11 @@ def get_embedded_stats(stats, stats_uri):
     top_hero_names = get_top_heroes_sorted(stats, 5)
 
     if len(top_hero_names) > 0:
-        hero_stats_discord_embed = discord.Embed(color=get_hero_colour(top_hero_names[0]))
+        top_hero_name = top_hero_names[0]
+    else:
+        top_hero_name = None
+        
+    hero_stats_discord_embed = discord.Embed(color=get_hero_colour(top_hero_name))
 
     hero_stats_discord_embed.title = "[BattleTag {}]".format(stats["name"])
 
@@ -221,7 +225,7 @@ def get_max_sr(stats):
 
 def get_hero_colour(name):
     message_colour = DEFAULT_COLOUR
-    if name in HERO_COLOURS.keys():
+    if name is not None and name in HERO_COLOURS.keys():
         message_colour = HERO_COLOURS[name]
     else:
         print("Hero colour not found for hero {}, default {} used".format(name, message_colour))
