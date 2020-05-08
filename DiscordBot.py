@@ -230,7 +230,7 @@ def get_games_played(stats, top_hero):
 
 
 def get_win_percentage(stats, top_hero):
-    win_percentage = "NA"
+    win_percentage = "0%"
     try:
         win_percentage = stats["competitiveStats"]["careerStats"][top_hero]["game"]["winPercentage"]
     except KeyError as ke:
@@ -243,12 +243,12 @@ def get_max_sr(stats):
     max_sr = 0
     role = "unknown"
     if ratings is not None:
-      for item in ratings:
-          if "level" in item.keys():
-              level = item["level"]
-              if max_sr <= level:
-                  role = item["role"]
-                  max_sr = level
+        for item in ratings:
+            if "level" in item.keys():
+                level = item["level"]
+                if max_sr <= level:
+                    role = item["role"]
+                    max_sr = level
 
     return role, max_sr
 
