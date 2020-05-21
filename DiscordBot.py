@@ -185,7 +185,7 @@ def get_embedded_stats(stats, stats_uri):
     msg_output = get_formatted_sr(tank_sr, dps_sr, heal_sr)
     number_of_top_heroes = len(top_hero_names)
     if number_of_top_heroes > 0:
-        msg_output += "\nYour top {} heroes this season are:\n".format(
+        msg_output += "\n\nYour top {} heroes this season are:\n".format(
             len(top_hero_names))
     else:
         max_sr_role, max_sr_value = get_max_sr(stats)
@@ -288,7 +288,6 @@ def get_sr(stats):
         for item in ratings:
             if "level" in item.keys():
                 role = item["role"]
-                print("role = <{}>".format(role))
                 sr[index_lookup[role]] = item["level"]
     return sr
 
