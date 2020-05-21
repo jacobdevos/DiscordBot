@@ -18,6 +18,10 @@ HERO_COLOURS = {"ana": 0x718AB3, "bastion": 0x7C8F7B, "brigitte": 0xBE736E, "dVa
                 "sombra": 0x7359BA, "symmetra": 0x8EBCCC, "torbjorn": 0xC0726E, "tracer": 0xD79342,
                 "widowmaker": 0x9E6AA8, "winston": 0xA2A6BF, "zarya": 0xE77EB6, "zenyatta": 0xEDE582}
 
+SR_STAT_JOINER = " -- "
+SR_EMOJI_SUFFIX = "  :  {}"
+SR_EMOJI_COMBOS = [["shield", "crossed_swords", "medical_symbol"], ["fire_engine", "police_car", "ambulance"]]
+
 
 @client.event
 async def on_ready():
@@ -304,9 +308,9 @@ def get_value_or_default(value, default):
 
 
 def get_random_sr_fmt_string():
-    sr_fmt_strings = [":shield: : {} -- :crossed_swords: : {} -- :medical_symbol: : {}",
-                      ":fire_engine: : {} -- :police_car: : {} -- :ambulance: : {}"]
-    return sr_fmt_strings[random.randint(0, len(sr_fmt_strings) - 1)]
+    emoji_choice = SR_EMOJI_COMBOS[random.randint(0, len(SR_EMOJI_COMBOS) - 1)]
+    emoji_value_pairs = map(lambda x: ":" + x + ":" + SR_EMOJI_SUFFIX, emoji_choice)
+    return SR_STAT_JOINER.join(emoji_value_pairs)
 
 
 client.run(get_token())
