@@ -185,7 +185,7 @@ def get_embedded_stats(stats, stats_uri):
     msg_output = get_formatted_sr(tank_sr, dps_sr, heal_sr)
     number_of_top_heroes = len(top_hero_names)
     if number_of_top_heroes > 0:
-        msg_output = "\nYour top {} heroes this season are:\n".format(
+        msg_output += "\nYour top {} heroes this season are:\n".format(
             len(top_hero_names))
     else:
         max_sr_role, max_sr_value = get_max_sr(stats)
@@ -296,8 +296,8 @@ def get_sr(stats):
 def get_formatted_sr(tank, dps, heal):
     str_builder = get_random_sr_fmt_string()
     no_value = ":question:"
-    str_builder.format(get_value_or_default(tank, no_value), get_value_or_default(dps, no_value),
-                       get_value_or_default(heal, no_value))
+    return str_builder.format(get_value_or_default(tank, no_value), get_value_or_default(dps, no_value),
+                              get_value_or_default(heal, no_value))
 
 
 def get_value_or_default(value, default):
