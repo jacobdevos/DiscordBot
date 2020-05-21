@@ -304,8 +304,8 @@ def get_value_or_default(value, default):
 
 
 def get_random_sr_fmt_string():
-    sr_fmt_strings = [":shield: : {} -- :crossed_swords: : {}--:medical_symbol: : {}",
-                      ":fire_engine: : {}--:police_car: : {}--:ambulance: : {}"]
+    sr_fmt_strings = [":shield: : {} -- :crossed_swords: : {} -- :medical_symbol: : {}",
+                      ":fire_engine: : {} -- :police_car: : {} -- :ambulance: : {}"]
     return sr_fmt_strings[random.randint(0, len(sr_fmt_strings) - 1)]
 
 
