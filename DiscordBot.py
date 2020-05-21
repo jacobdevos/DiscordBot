@@ -181,7 +181,9 @@ def get_embedded_stats(stats, stats_uri):
 
     hero_stats_discord_embed.title = "[BattleTag {}]".format(stats["name"])
 
+    print("sr: <{}>".format(get_sr(stats)))
     max_sr_role, max_sr_value = get_max_sr(stats)
+
     number_of_top_heroes = len(top_hero_names)
     if number_of_top_heroes > 0:
         msg_output = "\n{} is your best role with {} SR and your top {} heroes this season are:\n".format(
@@ -274,6 +276,17 @@ def un_camel_case(camel_cased_string, space_before_numbers=True):
         else:
             output_string += camel_cased_string[i]
     return output_string
+
+
+def get_sr(stats):
+    sr = [None, None, None]
+    ratings = stats["ratings"]
+    role_lookup = {"tank": 0, "damage": 1, "support": 2}
+    if ratings is not None:
+        for item in ratings:
+            if "level" in item.keys():
+                sr[role_lookup["role"]] = item["level"]
+    return sr
 
 
 client.run(get_token())
