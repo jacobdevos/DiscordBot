@@ -181,14 +181,15 @@ def get_embedded_stats(stats, stats_uri):
 
     hero_stats_discord_embed.title = "[BattleTag {}]".format(stats["name"])
 
-    print("sr: <{}>".format(get_sr(stats)))
-    max_sr_role, max_sr_value = get_max_sr(stats)
-
+    [tank_sr, dps_sr, heal_sr] = get_sr(stats)
+    msg_output = get_formatted_sr(tank_sr, dps_sr, heal_sr)
     number_of_top_heroes = len(top_hero_names)
     if number_of_top_heroes > 0:
-        msg_output = "\n{} is your best role with {} SR and your top {} heroes this season are:\n".format(
-            max_sr_role.capitalize(), max_sr_value, len(top_hero_names))
+        msg_output = "\nYour top {} heroes this season are:\n".format(
+            len(top_hero_names))
     else:
+        max_sr_role, max_sr_value = get_max_sr(stats)
+
         msg_output = "\n{} is your best role with {} SR.\n".format(
             max_sr_role.capitalize(), max_sr_value)
 
@@ -279,16 +280,34 @@ def un_camel_case(camel_cased_string, space_before_numbers=True):
 
 
 def get_sr(stats):
+    """Returns a list of SR in this order [TANK_SR, DAMAGE_SR, SUPPORT_SR"""
     sr = [None, None, None]
     ratings = stats["ratings"]
-    role_lookup = {"tank": 0, "damage": 1, "support": 2}
+    index_lookup = {"tank": 0, "damage": 1, "support": 2}
     if ratings is not None:
         for item in ratings:
             if "level" in item.keys():
                 role = item["role"]
                 print("role = <{}>".format(role))
-                sr[role_lookup[role]] = item["level"]
+                sr[index_lookup[role]] = item["level"]
     return sr
+
+
+def get_formatted_sr(tank, dps, heal):
+    str_builder = get_random_sr_fmt_string()
+    no_value = ":question:"
+    str_builder.format(get_value_or_default(tank, no_value), get_value_or_default(dps, no_value),
+                       get_value_or_default(heal, no_value))
+
+
+def get_value_or_default(value, default):
+    return value if value is not None else default
+
+
+def get_random_sr_fmt_string():
+    sr_fmt_strings = [":shield:{}--:crossed_swords:{}--:medical_symbol:{}",
+                      ":fire_engine:{}--:police_car:{}--:ambulance:{}"]
+    return sr_fmt_strings[random.randint(0, len(sr_fmt_strings) - 1)]
 
 
 client.run(get_token())
