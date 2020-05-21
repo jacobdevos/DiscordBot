@@ -285,7 +285,9 @@ def get_sr(stats):
     if ratings is not None:
         for item in ratings:
             if "level" in item.keys():
-                sr[role_lookup["role"]] = item["level"]
+                role = role_lookup["role"]
+                print("role = <{}>".format(role))
+                sr[role] = item["level"]
     return sr
 
 
