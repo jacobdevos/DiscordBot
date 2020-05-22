@@ -18,7 +18,7 @@ HERO_COLOURS = {"ana": 0x718AB3, "bastion": 0x7C8F7B, "brigitte": 0xBE736E, "dVa
                 "sombra": 0x7359BA, "symmetra": 0x8EBCCC, "torbjorn": 0xC0726E, "tracer": 0xD79342,
                 "widowmaker": 0x9E6AA8, "winston": 0xA2A6BF, "zarya": 0xE77EB6, "zenyatta": 0xEDE582}
 
-SR_STAT_JOINER = ":black_large_square:"
+SR_STAT_JOINER = "        "
 SR_EMOJI_SUFFIX = "  :  {}"
 SR_EMOJI_COMBOS = [["shield", "crossed_swords", "medical_symbol"], ["fire_engine", "police_car", "ambulance"],
                    ["turtle", "shark", "unicorn"]]
