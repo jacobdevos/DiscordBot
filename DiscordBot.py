@@ -21,7 +21,7 @@ HERO_COLOURS = {"ana": 0x718AB3, "bastion": 0x7C8F7B, "brigitte": 0xBE736E, "dVa
 SR_STAT_JOINER = ":black_large_square:"
 SR_EMOJI_SUFFIX = "  :  {}"
 SR_EMOJI_COMBOS = [["shield", "crossed_swords", "medical_symbol"], ["fire_engine", "police_car", "ambulance"],
-                   ["turtle", "shark", "unicorn"]]
+                   ["ox", "shark", "unicorn"]]
 
 
 @client.event
