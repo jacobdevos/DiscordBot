@@ -98,6 +98,7 @@ def get_top_heroes_sorted(stats, max_number_of_heroes):
     hero_keys = top_heroes.keys()
     hero_keys = sorted(hero_keys, key=lambda key: int(top_heroes[key]["winPercentage"]))
     hero_keys.reverse()
+    hero_keys = filter(lambda x: x != "", hero_keys)
 
     return hero_keys[:max_number_of_heroes]
 
@@ -189,9 +190,10 @@ def get_embedded_stats(stats, stats_uri):
     [tank_sr, dps_sr, heal_sr] = get_sr(stats)
     msg_output = get_formatted_sr(tank_sr, dps_sr, heal_sr)
     number_of_top_heroes = len(top_hero_names)
+
     if number_of_top_heroes > 0:
         msg_output += "\n\nYour top {} heroes this season are:\n".format(
-            len(top_hero_names))
+            number_of_top_heroes)
     else:
         max_sr_role, max_sr_value = get_max_sr(stats)
 
