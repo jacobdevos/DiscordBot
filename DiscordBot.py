@@ -98,7 +98,7 @@ def get_top_heroes_sorted(stats, max_number_of_heroes):
     hero_keys = top_heroes.keys()
     hero_keys = sorted(hero_keys, key=lambda key: int(top_heroes[key]["winPercentage"]))
     hero_keys.reverse()
-    hero_keys = filter(lambda x: x != "", hero_keys)
+    hero_keys = list(filter(lambda x: x != "", hero_keys))
 
     return hero_keys[:max_number_of_heroes]
 
