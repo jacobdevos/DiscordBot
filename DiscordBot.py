@@ -73,10 +73,10 @@ async def on_member_join(member):
 
 def get_top_heroes_sorted(stats, max_number_of_heroes):
     top_heroes = stats["competitiveStats"]["topHeroes"]
-    top_heroes = list(filter(lambda x: x != "", top_heroes))
     # prune the list so that only heroes which have been played 10 or more times are considered
     heroes_with_less_than_ten_games = []
     heroes_with_zero_games_played = []
+    top_heroes.pop('', None)
     for key in top_heroes:
         try:
             games_played = int(stats["competitiveStats"]["careerStats"][key]["game"]["gamesPlayed"])
